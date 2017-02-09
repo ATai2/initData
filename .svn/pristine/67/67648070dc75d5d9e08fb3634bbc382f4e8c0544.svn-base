@@ -1,0 +1,15 @@
+﻿namespace BillBackUpcs.models
+{
+    public class TableStructure
+    {
+        public string Name { get; set; }
+
+        public string SystemTypeName { get; set; }
+
+        public int Maxlength { get; set; }
+
+        public bool IsNullable { get; set; }
+
+        public bool IsPk { get; set; }
+    }
+}

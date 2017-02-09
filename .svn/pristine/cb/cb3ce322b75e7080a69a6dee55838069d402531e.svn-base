@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Strings>
+  <path name="local" value="server = 192.168.1.198; database = Enuo63305330; uid = sa; pwd =63305330" />
+  <path name="remote" value="server = 192.168.1.198; database =remote; uid = sa; pwd =63305330" />
+  <path name="pic" value="C:/天庸公司/数字凭证(制作)/" />
+</Strings>

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "initData", "initData\initData.csproj", "{EA0868E1-DF7D-46C6-A4C0-FE0C5128E8B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BillBackUpcs", "BillBackUpcs\BillBackUpcs.csproj", "{7ECA2B35-ADA2-4CDF-8F0D-A62BF40C0DE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BillBackUpcsTests", "BillBackUpcsTests\BillBackUpcsTests.csproj", "{2C2EAEA3-5D7E-4426-8ED1-1601D42A11EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA0868E1-DF7D-46C6-A4C0-FE0C5128E8B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA0868E1-DF7D-46C6-A4C0-FE0C5128E8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA0868E1-DF7D-46C6-A4C0-FE0C5128E8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA0868E1-DF7D-46C6-A4C0-FE0C5128E8B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ECA2B35-ADA2-4CDF-8F0D-A62BF40C0DE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ECA2B35-ADA2-4CDF-8F0D-A62BF40C0DE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ECA2B35-ADA2-4CDF-8F0D-A62BF40C0DE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ECA2B35-ADA2-4CDF-8F0D-A62BF40C0DE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C2EAEA3-5D7E-4426-8ED1-1601D42A11EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C2EAEA3-5D7E-4426-8ED1-1601D42A11EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C2EAEA3-5D7E-4426-8ED1-1601D42A11EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C2EAEA3-5D7E-4426-8ED1-1601D42A11EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
