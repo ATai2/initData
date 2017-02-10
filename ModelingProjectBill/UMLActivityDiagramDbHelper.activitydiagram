@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<activityRootModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm10="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="1017e45b-507f-4e54-b892-a2866cc0383f" name="ActivityDbHelper" linkedPackageId="b9435151-fa3e-41b8-9638-1d60b108a079" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ActivityDesigner">
+  <ownedCommentsInternal>
+    <comment Id="458c71da-53ee-46c9-910e-8f329369e41e">
+      <elementDefinition Id="1671aa04-a0f6-4779-8ed9-830f7872e389" />
+      <body>检查表是否存在</body>
+    </comment>
+  </ownedCommentsInternal>
+  <profileInstances>
+    <packageHasProfileInstances Id="90bd8456-d1dc-4c76-8fef-ef51aa85edd6">
+      <profileInstance Id="42570481-dff8-4fdc-ac7b-b3be607c9952" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="fc75e39a-e7a8-4636-93cb-08227d0e828c">
+      <profileInstance Id="b54fd353-6657-467c-94ec-3cf29b0139b3" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <activityRootModelHasActivity>
+      <activity Id="157a7316-0004-4d0f-a038-d79b9acf22e3" name="ActivityDbHelper" isAbstract="false" isLeaf="false" isActiveClass="false" isReentrant="false" isReadOnly="false" isSingleExecution="false">
+        <elementDefinition Id="619070c4-249a-45e1-afe5-14e0b3067540" />
+        <nodes>
+          <initialNode Id="faeb5567-9124-4bec-a604-be009e5ee40b" name="Initial1" isLeaf="false">
+            <elementDefinition Id="895e3c2d-29b7-4b1a-a477-1495e2475eff" />
+            <flowNodeTargets>
+              <controlFlow Id="abc93f39-6a05-464c-9605-1985b6ed8eac" isLeaf="false">
+                <opaqueActionMoniker Id="b9e7b52f-1515-4107-b902-c8a9ff9b1648" LastKnownName="检查网络连接" />
+                <elementDefinition Id="e80e331f-b431-44f2-8a94-9c53d28e3624" />
+              </controlFlow>
+            </flowNodeTargets>
+          </initialNode>
+          <opaqueAction Id="b9e7b52f-1515-4107-b902-c8a9ff9b1648" name="检查网络连接" isLeaf="false">
+            <elementDefinition Id="5d7e4b87-e7bb-4e34-9f71-34ed414fc6c4" />
+            <flowNodeTargets>
+              <controlFlow Id="9b6923cb-2f66-4f62-a2e9-fa73db9438cc" isLeaf="false">
+                <opaqueActionMoniker Id="07666056-1677-4975-aae0-007095c4e385" LastKnownName="初始化数据表" />
+                <elementDefinition Id="5f15caa9-7800-4c67-a325-fee3d03e85a3" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction Id="07666056-1677-4975-aae0-007095c4e385" name="初始化数据表" isLeaf="false">
+            <elementDefinition Id="bc5ddc20-4c75-431a-927f-089f438b8228" />
+            <flowNodeTargets>
+              <controlFlow Id="23a27ed5-c787-406f-bec6-e97cc313c599" isLeaf="false">
+                <decisionNodeMoniker Id="ac99185b-37ec-4630-9377-1e64f902ccb5" LastKnownName="检查数据表在远程库中是否存在" />
+                <elementDefinition Id="0a7a04fc-e5ff-4bfe-bff6-4776d250f9d4" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction Id="012e9d22-3d65-40e7-9407-1dfae9d77f26" name="新建表" isLeaf="false">
+            <elementDefinition Id="11ea8bd5-3b85-4147-b201-6d0ac1232588" />
+          </opaqueAction>
+          <decisionNode Id="ac99185b-37ec-4630-9377-1e64f902ccb5" name="检查数据表在远程库中是否存在" isLeaf="false">
+            <description>检查数据表在远程库中是否存在</description>
+            <elementDefinition Id="0f8a2e3b-9e8c-4927-b853-2a2896130f15" />
+            <flowNodeTargets>
+              <controlFlow Id="feb3f7bc-060a-4003-a3da-dc003249f616" isLeaf="false">
+                <opaqueActionMoniker Id="012e9d22-3d65-40e7-9407-1dfae9d77f26" LastKnownName="新建表" />
+                <elementDefinition Id="f188d432-2aa7-438b-a1f1-3994110d2890" />
+              </controlFlow>
+              <controlFlow Id="c8627462-9403-487e-9912-92b61b11bd48" isLeaf="false">
+                <opaqueActionMoniker Id="5d9fa677-f64f-435c-be67-1f9fb03e5267" LastKnownName="旧表重命名" />
+                <elementDefinition Id="3cc488d3-84ef-49e5-a230-ca7a5032571c" />
+              </controlFlow>
+            </flowNodeTargets>
+          </decisionNode>
+          <objectNode Id="1db30ea7-94f7-489d-8942-2674eadab27c" name="不存在" isLeaf="false" ordering="Unordered" isControlType="false">
+            <elementDefinition Id="3c5de0a0-d161-409d-a79d-844cf41f6a8e" />
+            <upperBound>
+              <literalInteger Id="16d6a3e0-5bd8-4f40-bc23-d6f0558d83d5" name="2147483647" value="2147483647">
+                <elementDefinition Id="a15450ea-08cb-468d-873b-779a43b746a1" />
+              </literalInteger>
+            </upperBound>
+          </objectNode>
+          <opaqueAction Id="5d9fa677-f64f-435c-be67-1f9fb03e5267" name="旧表重命名" isLeaf="false">
+            <elementDefinition Id="4ffd1bca-b87e-4ec6-9677-fa9a50e40532" />
+            <flowNodeTargets>
+              <controlFlow Id="075c55de-eea0-4e78-ac6b-2161c62dd12e" isLeaf="false">
+                <opaqueActionMoniker Id="012e9d22-3d65-40e7-9407-1dfae9d77f26" LastKnownName="新建表" />
+                <elementDefinition Id="f1c2d18f-4eec-421a-ae24-149005174a3e" />
+              </controlFlow>
+            </flowNodeTargets>
+          </opaqueAction>
+          <opaqueAction Id="e9d9fc6d-be58-40bc-9002-3adad8084b4e" name="表数据迁移" isLeaf="false">
+            <elementDefinition Id="be53a410-713e-466b-b750-7372ee78b1a3" />
+          </opaqueAction>
+        </nodes>
+      </activity>
+    </activityRootModelHasActivity>
+  </packagedElements>
+  <package Id="b9435151-fa3e-41b8-9638-1d60b108a079" name="ModelingProjectBill">
+    <elementDefinition Id="e6e58ceb-e324-4a17-9aea-223ac66ae2d2" />
+  </package>
+</activityRootModel>

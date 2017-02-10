@@ -44,7 +44,7 @@ namespace TestConsole
             sw.Start();
             //查询出所有要备份的表
 
-            for (int k = 1; k < 11; k++)
+            for (int k = 1; k < 8; k++)
             {
                 string creatTableSql = "CREATE TABLE [dbo].[ty_FillInfo" + k + "] ( " +
                                        "[lIndex] bigint NOT NULL IDENTITY(1,1) , " +

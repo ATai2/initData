@@ -412,6 +412,7 @@ namespace BillBackUpcs.dal
 
             var pk = "";
             var pktype = "";
+            string tiffPath = null;
             foreach (var tableStructure in tablestruct)
             {
                 if (!tableStructure.IsPk) continue;
@@ -438,9 +439,24 @@ namespace BillBackUpcs.dal
                 foreach (DataRow dataRow in rows)
                 {
                     // 查找tiff文件，如果有插入操作直接写入；没有为空
-                    var tiff = "select ";
+                    var sVoucherNo = dataRow["sVoucherNo"];
+                    var tiffsql = "select sFilePathName from ty_VoucherFile where sVoucherNo='" + sVoucherNo + "'";
+                    SqlCommand tiffCommand=new SqlCommand(tiffsql,localConn);
+                    try
+                    {
+                        var result = tiffCommand.ExecuteReader();
+                        if (result.Read())
+                        {
+                            tiffPath=result["sFilePathName"].ToString();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        slog.Error(ex.Message);
+                    }
 
-                    insertSql= new StringBuilder("insert into " + tableName + "(");
+
+                    insertSql = new StringBuilder("insert into " + tableName + "(");
                     foreach (var tableStructure in tablestruct)
                     {
                         insertSql.Append(tableStructure.Name).Append(",");
@@ -476,7 +492,17 @@ namespace BillBackUpcs.dal
                         insertSql.Append(",");
                     }
 
-                    insertSql.Append("' '," + "'" + configModel.Hisid + "'," + "'" + DateTime.Now + "')");
+                    if (String.IsNullOrEmpty(tiffPath))
+                    {
+                        tiffPath = "NULL";
+                        
+                    }
+                    else
+                    {
+                        //有tiff路径，则进行tiff移动。 如果报错，词条记录不删除
+                    }
+
+                    insertSql.Append(tiffPath + ",'" + configModel.Hisid + "'," + "'" + DateTime.Now + "')");
                     
 //                    SqlTransaction localTransaction = localConn.BeginTransaction();
 //                    SqlTransaction remoteTransaction = remoteConn.BeginTransaction();

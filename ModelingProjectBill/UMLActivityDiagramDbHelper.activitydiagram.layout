@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<activityDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="UMLActivityDiagramDbHelper">
+  <activityRootModelMoniker Id="1017e45b-507f-4e54-b892-a2866cc0383f" />
+  <nestedChildShapes>
+    <initialNodeShape Id="0d674820-7083-4461-a4fb-feeddb2e9e11" absoluteBounds="4.375, 0.5, 0.125, 0.125" customColor="89, 89, 89">
+      <initialNodeMoniker Id="faeb5567-9124-4bec-a604-be009e5ee40b" LastKnownName="Initial1" />
+    </initialNodeShape>
+    <actionShape Id="764b3265-14a6-4f8f-9a6f-41910e373344" absoluteBounds="3.875, 1.125, 1.125, 0.375" customColor="161, 199, 231">
+      <opaqueActionMoniker Id="b9e7b52f-1515-4107-b902-c8a9ff9b1648" LastKnownName="检查网络连接" />
+    </actionShape>
+    <controlFlowConnector edgePoints="[(4.4375 : 0.625); (4.4375 : 1.125)]" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="Black">
+      <controlFlowMoniker Id="abc93f39-6a05-464c-9605-1985b6ed8eac" />
+      <relativeChildShapes />
+      <nodes>
+        <initialNodeShapeMoniker Id="0d674820-7083-4461-a4fb-feeddb2e9e11" />
+        <actionShapeMoniker Id="764b3265-14a6-4f8f-9a6f-41910e373344" />
+      </nodes>
+    </controlFlowConnector>
+    <actionShape Id="a4fcf533-4b58-49f8-9547-56e7968eb8c9" absoluteBounds="3.875, 1.875, 1.125, 0.375" customColor="161, 199, 231">
+      <opaqueActionMoniker Id="07666056-1677-4975-aae0-007095c4e385" LastKnownName="初始化数据表" />
+    </actionShape>
+    <actionShape Id="3b1b769b-f244-444a-bd3c-6f393fdcced9" absoluteBounds="3.875, 4.375, 1.125, 0.375" customColor="161, 199, 231">
+      <opaqueActionMoniker Id="012e9d22-3d65-40e7-9407-1dfae9d77f26" LastKnownName="新建表" />
+    </actionShape>
+    <decisionNodeShape Id="277a132b-c025-4065-9efd-6a40c5acb06d" absoluteBounds="3.75, 2.875, 1.375, 0.625" customColor="185, 212, 238">
+      <decisionNodeMoniker Id="ac99185b-37ec-4630-9377-1e64f902ccb5" LastKnownName="检查数据表在远程库中是否存在" />
+      <relativeChildShapes />
+    </decisionNodeShape>
+    <objectNodeShape Id="410a1f9e-e2a0-47a2-914b-fe234c71e341" absoluteBounds="3.25, 3.75, 0.5, 0.375" customColor="White">
+      <objectNodeMoniker Id="1db30ea7-94f7-489d-8942-2674eadab27c" LastKnownName="不存在" />
+    </objectNodeShape>
+    <controlFlowConnector edgePoints="[(4.4375 : 2.25); (4.4375 : 2.875)]" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="Black">
+      <controlFlowMoniker Id="23a27ed5-c787-406f-bec6-e97cc313c599" />
+      <relativeChildShapes />
+      <nodes>
+        <actionShapeMoniker Id="a4fcf533-4b58-49f8-9547-56e7968eb8c9" />
+        <decisionNodeShapeMoniker Id="277a132b-c025-4065-9efd-6a40c5acb06d" />
+      </nodes>
+    </controlFlowConnector>
+    <actionShape Id="84952a35-3cd8-4b25-8b79-5afab26d7075" absoluteBounds="6, 4.375, 1.125, 0.375" customColor="161, 199, 231">
+      <opaqueActionMoniker Id="5d9fa677-f64f-435c-be67-1f9fb03e5267" LastKnownName="旧表重命名" />
+    </actionShape>
+    <controlFlowConnector edgePoints="[(4.4375 : 3.5); (4.4375 : 4.375)]" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="Black">
+      <controlFlowMoniker Id="feb3f7bc-060a-4003-a3da-dc003249f616" />
+      <relativeChildShapes />
+      <nodes>
+        <decisionNodeShapeMoniker Id="277a132b-c025-4065-9efd-6a40c5acb06d" />
+        <actionShapeMoniker Id="3b1b769b-f244-444a-bd3c-6f393fdcced9" />
+      </nodes>
+    </controlFlowConnector>
+    <controlFlowConnector edgePoints="[(5.125 : 3.1875); (6.5625 : 3.1875); (6.5625 : 4.375)]" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="Black">
+      <controlFlowMoniker Id="c8627462-9403-487e-9912-92b61b11bd48" />
+      <relativeChildShapes />
+      <nodes>
+        <decisionNodeShapeMoniker Id="277a132b-c025-4065-9efd-6a40c5acb06d" />
+        <actionShapeMoniker Id="84952a35-3cd8-4b25-8b79-5afab26d7075" />
+      </nodes>
+    </controlFlowConnector>
+    <controlFlowConnector edgePoints="[(6 : 4.5625); (5 : 4.5625)]" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="Black">
+      <controlFlowMoniker Id="075c55de-eea0-4e78-ac6b-2161c62dd12e" />
+      <relativeChildShapes />
+      <nodes>
+        <actionShapeMoniker Id="84952a35-3cd8-4b25-8b79-5afab26d7075" />
+        <actionShapeMoniker Id="3b1b769b-f244-444a-bd3c-6f393fdcced9" />
+      </nodes>
+    </controlFlowConnector>
+    <controlFlowConnector edgePoints="[(4.4375 : 1.5); (4.4375 : 1.875)]" fixedFrom="Algorithm" fixedTo="Algorithm" customColor="Black">
+      <controlFlowMoniker Id="9b6923cb-2f66-4f62-a2e9-fa73db9438cc" />
+      <relativeChildShapes />
+      <nodes>
+        <actionShapeMoniker Id="764b3265-14a6-4f8f-9a6f-41910e373344" />
+        <actionShapeMoniker Id="a4fcf533-4b58-49f8-9547-56e7968eb8c9" />
+      </nodes>
+    </controlFlowConnector>
+    <commentShape Id="601e69db-26c4-4ad5-8aaf-eb7a0cc6185a" absoluteBounds="2.375, 3, 1.25, 0.375" customColor="251, 247, 200">
+      <commentMoniker Id="458c71da-53ee-46c9-910e-8f329369e41e" />
+      <relativeChildShapes />
+    </commentShape>
+    <actionShape Id="60bc4c74-93d5-46bf-ae76-30da8f5d1291" absoluteBounds="3.875, 5.375, 1.125, 0.375" customColor="161, 199, 231">
+      <opaqueActionMoniker Id="e9d9fc6d-be58-40bc-9002-3adad8084b4e" LastKnownName="表数据迁移" />
+    </actionShape>
+  </nestedChildShapes>
+</activityDiagram>
