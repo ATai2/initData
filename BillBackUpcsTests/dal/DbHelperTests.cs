@@ -35,7 +35,6 @@ namespace BillBackUpcs.dal.Tests
         public void GetListFromControllTableTest()
         {
            helper.GetListFromLocalControllTable();
-            int i = 0;
         }
     }
 }

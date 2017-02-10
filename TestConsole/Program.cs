@@ -14,8 +14,19 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            initTableDates();
+//            initTableDates();
 
+//            GetDir();
+            string src = "D:\\天庸公司\\数字凭证(制作)\\上海市财政局_非税收入_上海交通大学医学院附属新华医院_xinhua.tiff";
+            string des = "C:\\天庸公司\\数字凭证(制作)\\上海市财政局_非税收入_上海交通大学医学院附属新华医院_xinhua.tiff";
+            var f=new FileInfo(des);
+            var dir=f.DirectoryName;
+            if (!Directory.Exists(dir))
+            {
+                var sdf=Directory.CreateDirectory(dir);
+                int i = 0;
+            }
+            File.Move(src, des);
 
             //            Console.WriteLine(Path.PathSeparator+ DateTime.Now.ToString("yyyy-M-d"));
             //            string ip = "192.168.1.198";
@@ -31,6 +42,14 @@ namespace TestConsole
             //            }
             //
             //            Console.ReadKey();
+        }
+
+        private static void GetDir()
+        {
+            var str =@"D:\天庸公司\数字凭证(制作)\上海市财政局_非税收入_上海交通大学医学院附属新华医院_xinhua.tiff";
+            var index=str.LastIndexOf('\\');
+            Console.WriteLine(str.Substring(index));
+
         }
 
         private static void initTableDates()

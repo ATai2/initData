@@ -389,15 +389,41 @@ namespace BillBackUpcs.dal
         /// <returns></returns>
         private bool MoveTiffFile(string src, string des)
         {
+            if (String.IsNullOrEmpty(src.Trim())&&String.IsNullOrEmpty(des.Trim()))
+            {
+                return false;
+            }
+            if (!File.Exists(src))
+            {
+                return false;
+            }
+            if (File.Exists(des))
+            {
+                File.Delete(des);
+            }
             try
             {
+                var f = new FileInfo(des);
+                var dir = f.DirectoryName;
+                if (!Directory.Exists(dir))
+                {
+                    if (dir != null)
+                    {
+                        var sdf = Directory.CreateDirectory(dir);
+                    }
+                }
                 File.Move(src, des);
+                return true;
             }
+//            catch (IOException ex)
+//            {
+//                
+//            }
             catch (Exception exception)
             {
                 slog.Error(exception.Message);
+                return false;
             }
-            return true;
         }
 
         private void CopyTableData(string tableName)
@@ -435,20 +461,21 @@ namespace BillBackUpcs.dal
 
             if (rows.Count > 0)
             {
-                StringBuilder insertSql = null; 
+                StringBuilder insertSql = null;
                 foreach (DataRow dataRow in rows)
                 {
                     // 查找tiff文件，如果有插入操作直接写入；没有为空
                     var sVoucherNo = dataRow["sVoucherNo"];
                     var tiffsql = "select sFilePathName from ty_VoucherFile where sVoucherNo='" + sVoucherNo + "'";
-                    SqlCommand tiffCommand=new SqlCommand(tiffsql,localConn);
+                    SqlCommand tiffCommand = new SqlCommand(tiffsql, localConn);
                     try
                     {
                         var result = tiffCommand.ExecuteReader();
                         if (result.Read())
                         {
-                            tiffPath=result["sFilePathName"].ToString();
+                            tiffPath = result["sFilePathName"].ToString();
                         }
+                        result.Close();
                     }
                     catch (Exception ex)
                     {
@@ -492,66 +519,64 @@ namespace BillBackUpcs.dal
                         insertSql.Append(",");
                     }
 
-                    if (String.IsNullOrEmpty(tiffPath))
+                    //有tiff路径，则进行tiff移动。 如果报错，词条记录不删除
+                    var isNullOrEmpty = String.IsNullOrEmpty(tiffPath);
+                    bool moveFlag = false;
+                    string dest = isNullOrEmpty
+                        ? "NULL"
+                        : "'" + configModel.Pic + tiffPath.Substring(tiffPath.LastIndexOf('\\') + 1) + "'";
+                    if (!isNullOrEmpty)
                     {
-                        tiffPath = "NULL";
-                        
+                        moveFlag = MoveTiffFile(tiffPath, dest);
                     }
-                    else
+                    if (!moveFlag)
                     {
-                        //有tiff路径，则进行tiff移动。 如果报错，词条记录不删除
+                        dest = "NULL";
                     }
-
-                    insertSql.Append(tiffPath + ",'" + configModel.Hisid + "'," + "'" + DateTime.Now + "')");
-                    
-//                    SqlTransaction localTransaction = localConn.BeginTransaction();
-//                    SqlTransaction remoteTransaction = remoteConn.BeginTransaction();
+                    insertSql.Append(dest + ",'" + configModel.Hisid + "'," + "'" + DateTime.Now + "')");
                     try
                     {
-                        var insertCmd = new SqlCommand(insertSql.ToString(), remoteConn)
-                        {
-//                            Transaction = remoteTransaction
-                        };
-                        var insertResult = -1;
-                        insertResult = insertCmd.ExecuteNonQuery();
-                        if (insertResult != -1)
-                        {
-                            slog.Info("向表" + tableName + "中添加数据成功：" + insertSql.ToString());
-                            //新表数据添加成功，删除旧表数据
-                            var value = "";
-                            if (pktype.Equals("int") || pktype.Equals("bigint"))
+                        
+                            var insertCmd = new SqlCommand(insertSql.ToString(), remoteConn);
+                            var insertResult = -1;
+                            insertResult = insertCmd.ExecuteNonQuery();
+                            if (insertResult != -1)
                             {
-                                value = dataRow[pk].ToString();
-                            }
-                            else if (pktype.Equals("varchar"))
-                            {
-                                value = "'" + dataRow[pk] + "'";
-                            }
-
-                            var delsql = "delete from " + tableName + " where " + pk + "=" + value;
-                            var delcmd = new SqlCommand(delsql, localConn)
-                            {
-//                                Transaction = localTransaction
-                            };
-                            try
-                            {
-                                var delresult = delcmd.ExecuteNonQuery();
-                                if (delresult != -1)
+                                slog.Info("向表" + tableName + "中添加数据成功：" + insertSql.ToString());
+                                //新表数据添加成功，删除旧表数据
+                                var value = "";
+                                if (pktype.Equals("int") || pktype.Equals("bigint"))
                                 {
-                                    slog.Info("主键为：" + value + "旧表数据删除成功");
+                                    value = dataRow[pk].ToString();
+                                }
+                                else if (pktype.Equals("varchar"))
+                                {
+                                    value = "'" + dataRow[pk] + "'";
+                                }
+                                var delsql = "delete from " + tableName + " where " + pk + "=" + value;
+                                var delcmd = new SqlCommand(delsql, localConn);
+                                try
+                                {
+//                                    if (moveFlag)
+//                                    {
+                                        var delresult = delcmd.ExecuteNonQuery();
+                                        if (delresult != -1)
+                                        {
+                                            slog.Info("主键为：" + value + "旧表数据删除成功");
+                                        }
+//                                    }
+                                }
+                                catch (SqlException e)
+                                {
+                                    slog.Error("主键为：" + value + "删除本地表中数据失败");
+                                    slog.Error(e.Message);
                                 }
                             }
-                            catch (SqlException e)
+                            else
                             {
-                                slog.Error("主键为：" + value + "删除本地表中数据失败");
-                                slog.Error(e.Message);
-                               
+                                slog.Error("向表" + tableName + "中添加数据失败：" + insertSql.ToString());
                             }
-                        }
-                        else
-                        {
-                            slog.Error("向表" + tableName + "中添加数据失败：" + insertSql.ToString());
-                        }
+                       
                     }
                     catch (Exception)
                     {
