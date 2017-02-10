@@ -115,10 +115,6 @@ namespace BillBackUpcs.dal
             try
             {
                 var dr = cmd.ExecuteReader();
-                if (!dr.HasRows)
-                {
-                    Environment.Exit(0);
-                }
                 while (dr.Read())
                 {
                     mTables.Add(dr["sTableName"].ToString());
@@ -469,9 +465,6 @@ namespace BillBackUpcs.dal
                 StringBuilder insertSql = null;
                 foreach (DataRow dataRow in rows)
                 {
-                    //远程库中是否有数据，有旧数据删除；无继续
-                    var delRemote="select from "+tableName+" where "
-
                     // 查找tiff文件，如果有插入操作直接写入；没有为空
                     var sVoucherNo = dataRow["sVoucherNo"];
                     var tiffsql = "select sFilePathName from ty_VoucherFile where sVoucherNo='" + sVoucherNo + "'";

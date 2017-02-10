@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="controllers\IOperator.cs" />
     <Compile Include="dal\DbHelper.cs" />
+    <Compile Include="dal\RemoteSqlHelper.cs" />
     <Compile Include="dal\SqlHelper.cs" />
     <Compile Include="models\ColumnType.cs" />
     <Compile Include="models\ConfigModel.cs" />
