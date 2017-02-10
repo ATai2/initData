@@ -437,9 +437,6 @@ namespace BillBackUpcs.dal
                 StringBuilder insertSql = null; 
                 foreach (DataRow dataRow in rows)
                 {
-                    // 查找tiff文件，如果有插入操作直接写入；没有为空
-                    var tiff = "select ";
-
                     insertSql= new StringBuilder("insert into " + tableName + "(");
                     foreach (var tableStructure in tablestruct)
                     {
