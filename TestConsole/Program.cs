@@ -72,7 +72,7 @@ namespace TestConsole
             sw.Start();
             //查询出所有要备份的表
 
-            for (int k = 1; k < 8; k++)
+            for (int k = 1; k < 11; k++)
             {
                 string creatTableSql = 
 //                    "drop table  if exists(Select Top 1 Name From Sysobjects Where Name='" +
@@ -168,7 +168,7 @@ namespace TestConsole
                                        "ALTER TABLE [dbo].[ty_FillInfo" + k + "] ADD PRIMARY KEY ([lIndex])";
                 SqlCommand createCommand = new SqlCommand(creatTableSql, mycon);
                 createCommand.ExecuteNonQuery();
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     sql = "insert into ty_FillInfo" + k + " ("
                           +
