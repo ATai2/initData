@@ -17,7 +17,7 @@ namespace BillBackUpcs
         static void Main(string[] args)
         {
 
-            IOperator iOperator=new DbHelper();
+            IOperator iOperator=new DbSqlHelper();
             Stopwatch sw=new Stopwatch();
             sw.Start();
             Console.WriteLine("任务开始执行……");

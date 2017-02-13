@@ -184,7 +184,13 @@ namespace BillBackUpcs.dal
         /// <returns></returns> 
         public static string GetConnSting()
         {
-            return ConfigurationManager.ConnectionStrings["ConStr"].ConnectionString;
+            return connString;
+        }
+
+        private static string connString = "";
+        public static void SetConnString(string str)
+        {
+            connString = str;
         }
 
         /// <summary> 
@@ -193,7 +199,7 @@ namespace BillBackUpcs.dal
         /// <returns></returns> 
         public static SqlConnection GetConnection()
         {
-            SqlConnection Connection = new SqlConnection(SqlHelper.GetConnSting());
+            SqlConnection Connection = new SqlConnection(RemoteSqlHelper.GetConnSting());
             return Connection;
         }
 
@@ -265,7 +271,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从探索存储过程参数(加载到缓存)并分配给存储过程参数数组. 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
                 // 给存储过程参数赋值 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -349,7 +355,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 给存储过程分配参数值 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -436,7 +442,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 给存储过程参数赋值 
@@ -521,7 +527,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中检索存储过程参数 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
                 // 给存储过程参数分配值 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -610,7 +616,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 比缓存中加载存储过程参数 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 给存储过程参数分配值 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -698,7 +704,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 给存储过程参数分配值 
@@ -866,7 +872,7 @@ namespace BillBackUpcs.dal
 
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
                 AssignParameterValues(commandParameters, parameterValues);
 
@@ -933,7 +939,7 @@ namespace BillBackUpcs.dal
 
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 AssignParameterValues(commandParameters, parameterValues);
 
@@ -1011,7 +1017,7 @@ namespace BillBackUpcs.dal
             // 如果有参数值 
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -1096,7 +1102,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
                 // 给存储过程参数赋值 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -1186,7 +1192,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 给存储过程参数赋值 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -1277,7 +1283,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // PPull the parameters for this stored procedure from the parameter cache () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 给存储过程参数赋值 
@@ -1378,7 +1384,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 给存储过程参数赋值 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -1470,7 +1476,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 给存储过程参数赋值 
@@ -1655,7 +1661,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 给存储过程参数赋值 
                 AssignParameterValues(commandParameters, parameterValues);
@@ -1745,7 +1751,7 @@ namespace BillBackUpcs.dal
             if ((parameterValues != null) && (parameterValues.Length > 0))
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 给存储过程参数赋值 
@@ -1887,7 +1893,7 @@ namespace BillBackUpcs.dal
             if ((sourceColumns != null) && (sourceColumns.Length > 0))
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 将源表的列到映射到DataSet命令中. 
                 for (int index = 0; index < sourceColumns.Length; index++)
@@ -1921,7 +1927,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -1951,7 +1957,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -1983,7 +1989,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 分配参数值 
@@ -2018,7 +2024,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -2048,7 +2054,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -2080,7 +2086,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 分配参数值 
@@ -2115,7 +2121,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -2145,7 +2151,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -2177,7 +2183,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 分配参数值 
@@ -2212,7 +2218,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -2241,7 +2247,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -2273,7 +2279,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 分配参数值 
@@ -2307,7 +2313,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(connection, spName);
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(connection, spName);
 
                 // 分配参数值 
                 AssignParameterValues(commandParameters, dataRow);
@@ -2339,7 +2345,7 @@ namespace BillBackUpcs.dal
             if (dataRow != null && dataRow.ItemArray.Length > 0)
             {
                 // 从缓存中加载存储过程参数,如果缓存中不存在则从数据库中检索参数信息并加载到缓存中. () 
-                SqlParameter[] commandParameters = SqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
+                SqlParameter[] commandParameters = RemoteSqlHelperParameterCache.GetSpParameterSet(transaction.Connection,
                     spName);
 
                 // 分配参数值 

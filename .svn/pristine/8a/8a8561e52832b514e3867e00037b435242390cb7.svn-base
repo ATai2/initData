@@ -1,7 +1,0 @@
-记录时间：2017-02-07 11:20:24,282 线程ID:[9] 日志级别：ERROR 出错类：BillBackUpcs.Program property:[(null)] - 错误描述：error
-System.Exception: 发生了一个异常
-记录时间：2017-02-07 11:20:24,353 线程ID:[9] 日志级别：FATAL 出错类：BillBackUpcs.Program property:[(null)] - 错误描述：fatal
-System.Exception: 发生了一个致命错误
-记录时间：2017-02-07 11:20:24,357 线程ID:[9] 日志级别：INFO  出错类：BillBackUpcs.Program property:[(null)] - 错误描述：info
-记录时间：2017-02-07 11:20:24,361 线程ID:[9] 日志级别：DEBUG 出错类：BillBackUpcs.Program property:[(null)] - 错误描述：debug
-记录时间：2017-02-07 11:20:24,364 线程ID:[9] 日志级别：WARN  出错类：BillBackUpcs.Program property:[(null)] - 错误描述：warn

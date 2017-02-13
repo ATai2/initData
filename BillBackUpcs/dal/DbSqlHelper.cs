@@ -18,16 +18,16 @@ namespace BillBackUpcs.dal
     /// 1.所有需要连接的地方，都先做检查
     /// 
     /// </summary>
-    public class DbHelper : IOperator
+    public class DbSqlHelper : IOperator
     {
-        private ILog slog = LogManager.GetLogger(typeof(DbHelper));
+        private ILog slog = LogManager.GetLogger(typeof(DbSqlHelper));
         private ConfigModel configModel;
         private SqlConnection localConn;
         private SqlConnection remoteConn;
         private List<string> mTables;
         private List<string> mRemoteTables;
 
-        public DbHelper()
+        public DbSqlHelper()
         {
             string configPath = "initdata.xml";
             if (!File.Exists(configPath))
@@ -36,6 +36,9 @@ namespace BillBackUpcs.dal
             }
             configModel = new ConfigModel();
             configModel.Init(configPath);
+            SqlHelper.SetConnString(configModel.Local);
+            RemoteSqlHelper.SetConnString(configModel.Remote);
+//            localConn = SqlHelper.GetConnection();
         }
 
         /// <summary>
@@ -47,7 +50,7 @@ namespace BillBackUpcs.dal
         {
             try
             {
-                localConn = new SqlConnection(constr);
+                localConn = SqlHelper.GetConnection();
                 localConn.Open();
                 slog.Info("获得本地数据库");
             }
@@ -68,7 +71,7 @@ namespace BillBackUpcs.dal
         {
             try
             {
-                remoteConn = new SqlConnection(constr);
+                remoteConn = RemoteSqlHelper.GetConnection();
                 remoteConn.Open();
                 slog.Info("获得远程数据库");
             }
@@ -111,10 +114,9 @@ namespace BillBackUpcs.dal
             var controlTable = "ty_FillTableList"; //放入配置文件中
             var sql = "select sTableName from " + controlTable;
             mTables = new List<string>();
-            SqlCommand cmd = new SqlCommand(sql, localConn);
             try
             {
-                var dr = cmd.ExecuteReader();
+                var dr = SqlHelper.ExecuteReader(localConn, CommandType.Text, sql);
                 if (!dr.HasRows)
                 {
                     Environment.Exit(0);
@@ -139,10 +141,10 @@ namespace BillBackUpcs.dal
             CheckRemotConn();
             var sql = "SELECT Name FROM SysObjects Where XType='U' ORDER BY Name";
             mRemoteTables = new List<string>();
-            SqlCommand cmd = new SqlCommand(sql, remoteConn);
+//            SqlCommand cmd = new SqlCommand(sql, remoteConn);
             try
             {
-                var dr = cmd.ExecuteReader();
+                var dr = RemoteSqlHelper.ExecuteReader(RemoteSqlHelper.GetConnection(), CommandType.Text, sql);
                 while (dr.Read())
                 {
                     mRemoteTables.Add(dr["Name"].ToString());
@@ -219,7 +221,15 @@ namespace BillBackUpcs.dal
                     string sql = "EXEC sp_rename '" + tableName + "','" + tableName + DateTime.Today + "'";
                     var cmd = new SqlCommand(sql, remoteConn);
                     cmd.ExecuteNonQuery();
-                    slog.Info("表" + tableName + "重命名成功！");
+                    var result = RemoteSqlHelper.ExecuteNonQuery(RemoteSqlHelper.GetConnection(), CommandType.Text, sql);
+                    if (result > -1)
+                    {
+                        slog.Info("表" + tableName + "重命名成功！");
+                    }
+                    else
+                    {
+                        slog.Error("表" + tableName + "重命名失败！");
+                    }
                 }
                 catch (Exception)
                 {
@@ -286,11 +296,15 @@ namespace BillBackUpcs.dal
             sb.Append(pm);
             sb.Append(")");
 
-            SqlCommand creatCommand = new SqlCommand(sb.ToString(), remoteConn);
+//            SqlCommand creatCommand = new SqlCommand(sb.ToString(), remoteConn);
             try
             {
-                var createTableResult = creatCommand.ExecuteNonQuery();
-                slog.Info("创建表" + tableName + "成功！");
+                var createTableResult = RemoteSqlHelper.ExecuteNonQuery(RemoteSqlHelper.GetConnection(),
+                    CommandType.Text, sb.ToString());
+                if (createTableResult > 0)
+                {
+                    slog.Info("创建表" + tableName + "成功！");
+                }
             }
             catch (Exception)
             {
@@ -336,12 +350,14 @@ namespace BillBackUpcs.dal
                 var rd = cmd.ExecuteReader();
                 while (rd.Read())
                 {
-                    var ts = new TableStructure();
-                    ts.Name = rd[0].ToString();
-                    ts.SystemTypeName = rd[1].ToString();
-                    ts.Maxlength = int.Parse(rd[2].ToString());
-                    ts.IsNullable = bool.Parse(rd[4].ToString());
-                    ts.IsPk = bool.Parse(rd[4].ToString());
+                    var ts = new TableStructure
+                    {
+                        Name = rd[0].ToString(),
+                        SystemTypeName = rd[1].ToString(),
+                        Maxlength = int.Parse(rd[2].ToString()),
+                        IsNullable = bool.Parse(rd[4].ToString()),
+                        IsPk = bool.Parse(rd[4].ToString())
+                    };
                     fields.Add(ts);
                 }
                 rd.Close();
@@ -349,9 +365,6 @@ namespace BillBackUpcs.dal
             catch (Exception)
             {
             }
-//            Close();
-//            CheckLocalConn();
-//            CheckRemotConn();
             return fields;
         }
 
@@ -363,20 +376,21 @@ namespace BillBackUpcs.dal
         {
             string targetDir = "";
             string sql = "select sVoucherKey, sVoucherNo, sFilePathName from ty_VoucherFile";
-            List<TiffBean> list = new List<TiffBean>();
+            var list = new List<TiffBean>();
             try
             {
-                var rd = new SqlCommand(sql, localConn).ExecuteReader();
+//                var rd = new SqlCommand(sql, localConn).ExecuteReader();
+                var rd = SqlHelper.ExecuteReader(SqlHelper.GetConnection(), CommandType.Text, sql);
                 while (rd.Read())
                 {
-                    TiffBean bean = new TiffBean
+                    var bean = new TiffBean
                     {
                         SVoucherKey = rd["sVoucherKey"].ToString(),
                         SUoucherNo = rd["sVoucherNo"].ToString(),
-                        SFilePahtName = rd["sFilePathName"].ToString()
+                        SFilePahtName = rd["sFilePathName"].ToString(),
+                        Destination = targetDir + "\\" + DateTime.Now.Date +
+                                      rd["sFilePathName"].ToString().Substring(2)
                     };
-                    bean.Destination = targetDir + "\\" + DateTime.Now.Date +
-                                       rd["sFilePathName"].ToString().Substring(2);
                     list.Add(bean);
                 }
             }
@@ -456,20 +470,16 @@ namespace BillBackUpcs.dal
 
             string sql = "select * from " + tableName;
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, localConn);
+            var ds = SqlHelper.ExecuteDataset(localConn, CommandType.Text, sql);
 
-            DataSet ds = new DataSet();
-            dataAdapter.Fill(ds, tableName);
-            dataAdapter.Dispose();
-            //获得查询数据，构建sql语句
-            var rows = ds.Tables[tableName].Rows;
+            var rows = ds.Tables[0].Rows;
 
             if (rows.Count > 0)
             {
                 StringBuilder insertSql = null;
                 foreach (DataRow dataRow in rows)
                 {
-                    //远程库中是否有数据，有旧数据删除；无继续
+                    //远程库中是否有数据，有旧数据删除；无继续!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //                    var delRemote="select from "+tableName+" where "
 
                     // 查找tiff文件，如果有插入操作直接写入；没有为空
@@ -478,7 +488,9 @@ namespace BillBackUpcs.dal
                     SqlCommand tiffCommand = new SqlCommand(tiffsql, localConn);
                     try
                     {
-                        var result = tiffCommand.ExecuteReader();
+                        var result = SqlHelper.ExecuteReader(localConn, CommandType.Text, tiffsql);
+
+//                        var result = tiffCommand.ExecuteReader();
                         if (result.Read())
                         {
                             tiffPath = result["sFilePathName"].ToString();
@@ -528,7 +540,7 @@ namespace BillBackUpcs.dal
                     }
 
                     //有tiff路径，则进行tiff移动。 如果报错，词条记录不删除
-                    var isNullOrEmpty = String.IsNullOrEmpty(tiffPath);
+                    var isNullOrEmpty = string.IsNullOrEmpty(tiffPath);
                     bool moveFlag = false;
                     var path = "";
                     string dest;
@@ -547,9 +559,11 @@ namespace BillBackUpcs.dal
                     insertSql.Append(dest + ",'" + configModel.Hisid + "'," + "'" + DateTime.Now + "')");
                     try
                     {
-                        var insertCmd = new SqlCommand(insertSql.ToString(), remoteConn);
+//                        var insertCmd = new SqlCommand(insertSql.ToString(), remoteConn);
                         var insertResult = -1;
-                        insertResult = insertCmd.ExecuteNonQuery();
+//                        insertResult = insertCmd.ExecuteNonQuery();
+                        insertResult = RemoteSqlHelper.ExecuteNonQuery(remoteConn, CommandType.Text,
+                            insertSql.ToString());
                         if (insertResult != -1)
                         {
                             slog.Info("向表" + tableName + "中添加数据成功：" + insertSql.ToString());
@@ -564,12 +578,13 @@ namespace BillBackUpcs.dal
                                 value = "'" + dataRow[pk] + "'";
                             }
                             var delsql = "delete from " + tableName + " where " + pk + "=" + value;
-                            var delcmd = new SqlCommand(delsql, localConn);
+//                            var delcmd = SqlHelper.ExecuteNonQuery(localConn,CommandType.Text,delsql);
+//                            var delcmd = new SqlCommand(delsql, localConn);
                             try
                             {
 //                                    if (moveFlag)
 //                                    {
-                                var delresult = delcmd.ExecuteNonQuery();
+                                var delresult = SqlHelper.ExecuteNonQuery(localConn, CommandType.Text, delsql);
                                 if (delresult != -1)
                                 {
                                     slog.Info("主键为：" + value + "旧表数据删除成功");
@@ -599,91 +614,6 @@ namespace BillBackUpcs.dal
             {
                 slog.Info("数据表" + tableName + "中查无数据！");
             }
-
-//            while (reader.Read())
-//            {
-//                #region sql
-//
-//                StringBuilder insertSql = new StringBuilder("insert into " + tableName + "(");
-//                foreach (TableStructure t in tablestruct)
-//                {
-//                    insertSql.Append(t.Name);
-//                    insertSql.Append(",");
-//                }
-//                insertSql.Append(Constant.TIFF_DEST + "," + Constant.HIS_ID + "," + Constant.BACK_DATE + ") values (");
-//
-//                for (int i = 0; i < reader.FieldCount; i++)
-//                {
-//                    var memberInfo = reader.GetFieldType(i);
-//                    if (memberInfo == null) continue;
-//                    var type = memberInfo.Name;
-//                    switch (type)
-//                    {
-//                        case "Int64":
-//                            insertSql.Append(Convert.ToInt64(reader[i]));
-//                            break;
-//                        case "String":
-//                            var str = reader[i].ToString();
-//                            if (String.IsNullOrEmpty(str))
-//                            {
-//                                insertSql.Append("NULL");
-//                            }
-//                            else
-//                            {
-//                                insertSql.Append("'").Append(str).Append("'");
-//                            }
-//
-//                            break;
-//                    }
-//                    insertSql.Append(",");
-//                }
-//
-//                insertSql.Append("' '," + "'" + configModel.Hisid + "'," + "'" + DateTime.Now + "')");
-//
-//                #endregion
-//
-//                SqlTransaction localTransaction = localConn.BeginTransaction();
-//                SqlTransaction remoteTransaction = remoteConn.BeginTransaction();
-//                try
-//                {
-//                    var insertCmd = new SqlCommand(insertSql.ToString(), remoteConn) {Transaction = remoteTransaction};
-//                    var insertResult = -1;
-//                    insertResult = insertCmd.ExecuteNonQuery();
-//                    if (insertResult != -1)
-//                    {
-//                        slog.Info("向表" + tableName + "中添加数据成功：" + insertSql.ToString());
-//                        //新表数据添加成功，删除旧表数据
-//                        var value = "";
-//                        if (pktype.Equals("int") && pktype.Equals("bigint"))
-//                        {
-//                            value = reader[pk].ToString();
-//                        }
-//                        else if (pktype.Equals("varchar"))
-//                        {
-//                            value = "'" + reader[pk] + "'";
-//                        }
-//
-//                        var delsql = "delete from " + tableName + " where " + pk + "=" + value;
-//                        var delcmd = new SqlCommand(delsql, localConn) {Transaction = localTransaction};
-//                        var delresult = delcmd.ExecuteNonQuery();
-//                        if (delresult != -1)
-//                        {
-//                            slog.Info("主键为：" + value + "旧表数据删除成功");
-//                        }
-//                    }
-//                    else
-//                    {
-//                        slog.Error("向表" + tableName + "中添加数据失败：" + insertSql.ToString());
-//                    }
-//                }
-//                catch (Exception)
-//                {
-//                    localTransaction.Rollback();
-//                    remoteTransaction.Rollback();
-//                }
-//            }
-
-//            reader.Close();
         }
 
         /// <summary>

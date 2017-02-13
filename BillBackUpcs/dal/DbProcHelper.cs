@@ -18,16 +18,16 @@ namespace BillBackUpcs.dal
     /// 1.所有需要连接的地方，都先做检查
     /// 
     /// </summary>
-    public class DbHelper : IOperator
+    public class DbProcHelper : IOperator
     {
-        private ILog slog = LogManager.GetLogger(typeof(DbHelper));
+        private ILog slog = LogManager.GetLogger(typeof(DbProcHelper));
         private ConfigModel configModel;
         private SqlConnection localConn;
         private SqlConnection remoteConn;
         private List<string> mTables;
         private List<string> mRemoteTables;
 
-        public DbHelper()
+        public DbProcHelper()
         {
             string configPath = "initdata.xml";
             if (!File.Exists(configPath))

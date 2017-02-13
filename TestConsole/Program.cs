@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using BillBackUpcs.dal;
 
 namespace TestConsole
 {
@@ -15,6 +17,13 @@ namespace TestConsole
         static void Main(string[] args)
         {
             initTableDates();
+//            SqlHelper.SetConnString("server = 192.168.1.198; database = Enuo63305330; uid = sa; pwd =63305330");
+//            var sql =
+//                "create proc StuProc @lIndex int as begin select * from ty_FillInfo1 where lIndex=@lIndex end";
+//            var sel = "StuProc";
+//            SqlHelper.ExecuteNonQuery(SqlHelper.GetConnection(), CommandType.Text, sql);
+//            var read=SqlHelper.ExecuteReader(SqlHelper.GetConnection(), CommandType.StoredProcedure,sel, new SqlParameter("@lIndex",76));
+//            Console.WriteLine(read[0]);
 
 //            GetDir();
 //            string src = "D:\\天庸公司\\数字凭证(制作)\\上海市财政局_非税收入_上海交通大学医学院附属新华医院_xinhua.tiff";
@@ -65,7 +74,10 @@ namespace TestConsole
 
             for (int k = 1; k < 8; k++)
             {
-                string creatTableSql = "CREATE TABLE [dbo].[ty_FillInfo" + k + "] ( " +
+                string creatTableSql = 
+//                    "drop table  if exists(Select Top 1 Name From Sysobjects Where Name='" +
+//                                       "[dbo].[ty_FillInfo" + k + "])' And XType='U'  go;" +
+                                       "CREATE TABLE [dbo].[ty_FillInfo" + k + "] ( " +
                                        "[lIndex] bigint NOT NULL IDENTITY(1,1) , " +
                                        "[sKey] varchar(40) NOT NULL , " +
                                        "[sVoucherNo] varchar(40) NULL , " +

@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="controllers\IOperator.cs" />
+    <Compile Include="dal\DbProcHelper.cs" />
+    <Compile Include="dal\DbSqlHelper.cs" />
     <Compile Include="dal\DbHelper.cs" />
     <Compile Include="dal\RemoteSqlHelper.cs" />
     <Compile Include="dal\SqlHelper.cs" />
