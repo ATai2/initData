@@ -289,10 +289,11 @@ namespace BillBackUpcs.dal
                     pm = "PRIMARY KEY (" + tableStructure.Name + ")";
                 }
             }
-//            添加额外的字段   目录迁移地址；医院id；操作时间
+//            添加额外的字段   目录迁移地址；医院id；操作时间；是否打印
             sb.Append("tiffdest varchar(255) NULL, ")
                 .Append("hisid varchar(128) NULL,")
-                .Append("backupdate varchar(128) NULL,");
+                .Append("backupdate varchar(128) NULL,")
+                .Append("isprint int NOT NULL  default(0),");
             sb.Append(pm);
             sb.Append(")");
 

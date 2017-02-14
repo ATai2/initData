@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
+using System.Drawing.Printing;
+using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using PrintForm.dal;
-using PrintForm.model;
 
 namespace PrintForm
 {
     public partial class PrintForm : Form
     {
-        DbService helper = new DbService();
+        public readonly DbService Helper = new DbService();
+        private PrintPreviewDialog ppdPicture;
+        private PrintDocument pd;
 
         public PrintForm()
         {
@@ -28,7 +25,7 @@ namespace PrintForm
         }
 
         /// <summary>
-        /// 通过读卡器，输入身份信息
+        ///     通过读卡器，输入身份信息
         /// </summary>
         private void FillFormField()
         {
@@ -36,16 +33,18 @@ namespace PrintForm
         }
 
         /// <summary>
-        /// 检索：当前医院，所有表的检索？
+        ///     检索：当前医院，所有表的检索？
         /// </summary>
         private void SearchBill()
         {
             var sqlBuilder = new StringBuilder();
 
-            var list = helper.GetListFromRemoteControllTable();
-            for (int i = 0; i < list.Count; i++)
+            var list = Helper.GetListFromRemoteControllTable();
+            for (var i = 0; i < list.Count; i++)
             {
-                sqlBuilder.Append("select 	SUNITNAME_1 as '医院名称'" +
+                sqlBuilder.Append("select '" + list[i] + "' as tableName" +
+                                  ",SUNITNAME_1 as '医院名称'" +
+                                  ",'是否已打印'=case isprint  when 1 then '是' when 0 then '否' end " +
                                   ",PURCHASENO_1 as '业务流水号'" +
                                   ",CLASSITEMNAME_1 as '医疗机构类型'" +
                                   ",CLASSITEMNAME_1 as '医疗机构类型'" +
@@ -126,32 +125,95 @@ namespace PrintForm
                                   ",SPURPOSE18_1 as 'aaa'" +
                                   ",SMONEYRNAME_1 as '收款员'" +
                                   ",SBIRTHDAY_1 as '日期'" + " from ").Append(list[i])
-                    .Append(" where PURCHASENO_1=").Append(tbNumber.Text)
-                    .Append(" and SUSERNAME_1='").Append(tbName.Text).Append("'");
+                    .Append(" where GOODSNO_1=").Append(tbNumber.Text.Trim())
+                    .Append(" and SUSERNAME_1='").Append(tbName.Text.Trim()).Append("'");
                 if (i != list.Count - 1)
-                {
                     sqlBuilder.Append(" union all ");
-                }
             }
 
-            var table = helper.GetTable(sqlBuilder.ToString());
+            var table = Helper.GetTable(sqlBuilder.ToString());
             dgvList.DataSource = table;
         }
 
         private void dgvList_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            SolidBrush b = new SolidBrush(this.dgvList.RowHeadersDefaultCellStyle.ForeColor);
-            e.Graphics.DrawString((e.RowIndex + 1).ToString(System.Globalization.CultureInfo.CurrentUICulture),
-                this.dgvList.DefaultCellStyle.Font, b, e.RowBounds.Location.X + 20, e.RowBounds.Location.Y + 4);
+            var b = new SolidBrush(dgvList.RowHeadersDefaultCellStyle.ForeColor);
+            e.Graphics.DrawString((e.RowIndex + 1).ToString(CultureInfo.CurrentUICulture),
+                dgvList.DefaultCellStyle.Font, b, e.RowBounds.Location.X + 20, e.RowBounds.Location.Y + 4);
+        }
+
+        private void btnPrePrint_Click(object sender, EventArgs e)
+        {
+
+            var rows=dgvList.SelectedRows;
+                
+                  //打印预览
+//             ppdPicture = new PrintPreviewDialog();
+            var ppc = new PrintPreviewControl();
+            pd =printDocument;
+
+            var margins = new Margins(20, 20, 20, 20);
+            pd.DefaultPageSettings.Margins = margins;
+            pd.DefaultPageSettings.Landscape = true;
+            pd.PrintPage += pd_PrintPage;
+
+            ppc.Document = pd;
+            //预览
+            Form formPreview=new Form();
+            formPreview.Controls.Add(ppc);
+            formPreview.Controls[0].Dock=DockStyle.Fill;
+            formPreview.ShowDialog();
+            formPreview.Dispose();
+
+//            ppdPicture.Document = pd;
+//            ppdPicture.ShowDialog();
+
+               
+
+            //数据表更新
+//            var update="update "
+           
+          
+        }
+
+        private void pd_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            var path = @"D:\天庸公司\数字凭证(制作)\上海市财政局_非税收入_上海交通大学医学院附属新华医院_dfgdfg.tiff";
+            var temp = Image.FromFile(path);
+
+            int printWidth = pd.DefaultPageSettings.PaperSize.Width; //打印机纸张的宽度
+            int printHeight = pd.DefaultPageSettings.PaperSize.Height; //打印机纸张的高度
+            int x = temp.Width, y = temp.Height;
+
+//            pd.DefaultPageSettings.PaperSize.Width=x; //打印机纸张的宽度
+//            pd.DefaultPageSettings.PaperSize.Height=y; //打印机纸张的高度
+
+            e.Graphics.DrawImage(temp, 0, 0, temp.Width, temp.Height);
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            //文件下载，存放在temp文件夹中
+            pd =printDocument;
 
-            //开启打印预览
+            var margins = new Margins(20, 20, 20, 20);
+            pd.DefaultPageSettings.Margins = margins;
+            pd.DefaultPageSettings.Landscape = true;
+            pd.PrintPage += pd_PrintPage;
 
-            //打印文件，推入打印队列
+            try
+            {
+                pd.Print();
+            }
+            finally
+            {
+                MessageBox.Show("打印失败");
+            }
+            
+        }
+
+        private void printDocument_EndPrint(object sender, PrintEventArgs e)
+        {
+            
         }
     }
 }
