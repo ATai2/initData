@@ -29,7 +29,10 @@ namespace BillBackUpcs.dal
 
         public DbSqlHelper()
         {
-            string configPath = "initdata.xml";
+            var str = System.AppDomain.CurrentDomain.BaseDirectory;
+            string configPath = str+"initdata.xml";
+            slog.Error(configPath);
+            slog.Info(configPath);
             if (!File.Exists(configPath))
             {
                 slog.Error("配置文件不存在，请联系管理员");
@@ -292,7 +295,7 @@ namespace BillBackUpcs.dal
 //            添加额外的字段   目录迁移地址；医院id；操作时间；是否打印
             sb.Append("tiffdest varchar(255) NULL, ")
                 .Append("hisid varchar(128) NULL,")
-                .Append("backupdate varchar(128) NULL,")
+                .Append("backupdate datetime default(getDate()),")
                 .Append("isprint int NOT NULL  default(0),");
             sb.Append(pm);
             sb.Append(")");
@@ -472,6 +475,12 @@ namespace BillBackUpcs.dal
             string sql = "select * from " + tableName;
 
             var ds = SqlHelper.ExecuteDataset(localConn, CommandType.Text, sql);
+            if (ds.Tables.Count<1)
+            {
+                slog.Info("表"+tableName+"中查无数据！");
+                return;
+            }
+
 
             var rows = ds.Tables[0].Rows;
 
@@ -486,7 +495,7 @@ namespace BillBackUpcs.dal
                     // 查找tiff文件，如果有插入操作直接写入；没有为空
                     var sVoucherNo = dataRow["sVoucherNo"];
                     var tiffsql = "select sFilePathName from ty_VoucherFile where sVoucherNo='" + sVoucherNo + "'";
-                    SqlCommand tiffCommand = new SqlCommand(tiffsql, localConn);
+//                    SqlCommand tiffCommand = new SqlCommand(tiffsql, localConn);
                     try
                     {
                         var result = SqlHelper.ExecuteReader(localConn, CommandType.Text, tiffsql);
@@ -509,7 +518,7 @@ namespace BillBackUpcs.dal
                     {
                         insertSql.Append(tableStructure.Name).Append(",");
                     }
-                    insertSql.Append(Constant.TIFF_DEST + "," + Constant.HIS_ID + "," + Constant.BACK_DATE +
+                    insertSql.Append(Constant.TIFF_DEST + "," + Constant.HIS_ID+
                                      ") values (");
 
                     for (int i = 0; i < tablestruct.Count; i++)
@@ -557,7 +566,7 @@ namespace BillBackUpcs.dal
                     {
                         dest = "NULL";
                     }
-                    insertSql.Append(dest + ",'" + configModel.Hisid + "'," + "'" + DateTime.Now + "')");
+                    insertSql.Append(dest + ",'" + configModel.Hisid +"' )");
                     try
                     {
 //                        var insertCmd = new SqlCommand(insertSql.ToString(), remoteConn);

@@ -16,6 +16,7 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
+            
             initTableDates();
 //            SqlHelper.SetConnString("server = 192.168.1.198; database = Enuo63305330; uid = sa; pwd =63305330");
 //            var sql =
@@ -75,8 +76,9 @@ namespace TestConsole
             for (int k = 1; k < 11; k++)
             {
                 string creatTableSql = 
-//                    "drop table  if exists(Select Top 1 Name From Sysobjects Where Name='" +
-//                                       "[dbo].[ty_FillInfo" + k + "])' And XType='U'  go;" +
+//                    "if exists(Select Top 1 Name From Sysobjects Where Name='" +
+//                                       "[dbo].[ty_FillInfo" + k + "])'" +
+//                    "drop table ty_FillInfo" + k + "; " +
                                        "CREATE TABLE [dbo].[ty_FillInfo" + k + "] ( " +
                                        "[lIndex] bigint NOT NULL IDENTITY(1,1) , " +
                                        "[sKey] varchar(40) NOT NULL , " +
@@ -168,12 +170,12 @@ namespace TestConsole
                                        "ALTER TABLE [dbo].[ty_FillInfo" + k + "] ADD PRIMARY KEY ([lIndex])";
                 SqlCommand createCommand = new SqlCommand(creatTableSql, mycon);
                 createCommand.ExecuteNonQuery();
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 1000; i++)
                 {
                     sql = "insert into ty_FillInfo" + k + " ("
                           +
                           "sKey,sVoucherNo,SUNITNAME_1,PURCHASENO_1,CLASSITEMNAME_1,GOODSNO_1,SUSERNAME_1,SMEMO_1,SMEMO1_1,SMEMO2_1,SUBJECTNAME_1,LIMITNUM_1,SUBJECTNAME1_1,LIMITNUM1_1,SUBJECTNAME2_1,LIMITNUM2_1,SUBJECTNAME3_1,LIMITNUM3_1,SUBJECTNAME4_1,LIMITNUM4_1,SUBJECTNAME5_1,LIMITNUM5_1,SUBJECTNAME6_1,LIMITNUM6_1,SMONEYB_1,MEDICALCARE_1,MEDICALCARE1_1,MEDICALCARE2_1,MEDICALCARE3_1,MEDICALCARE4_1,MEDICALCARE5_1,MEDICALCARE6_1,MEDICALCARE7_1,MEDICALCARE8_1,SPURPOSE_1,SPURPOSE9_1,NUMBER_1,PRICE_1,SMONEY_1,SPURPOSE1_1,SPURPOSE10_1,NUMBER1_1,PRICE1_1,SMONEY1_1,SPURPOSE2_1,SPURPOSE11_1,NUMBER2_1,PRICE2_1,SMONEY2_1,SPURPOSE3_1,SPURPOSE12_1,NUMBER3_1,PRICE3_1,SMONEY3_1,SPURPOSE4_1,SPURPOSE13_1,NUMBER4_1,PRICE4_1,SMONEY4_1,SPURPOSE5_1,SPURPOSE14_1,NUMBER5_1,PRICE5_1,SMONEY5_1,SPURPOSE6_1,SPURPOSE15_1,NUMBER6_1,PRICE6_1,SMONEY6_1,SPURPOSE7_1,SPURPOSE16_1,NUMBER7_1,PRICE7_1,SMONEY7_1,SPURPOSE8_1,SPURPOSE17_1,NUMBER8_1,PRICE8_1,SMONEY8_1,SPURPOSE18_1,SMONEYRNAME_1,SBIRTHDAY_1,sShareField,sEmail,sState) "
-                          + "values('sKey" + i + "','xinhua" + i + "','新华医院','111223333','国有医院','201701051123" + i + "','张三" + i +
+                          + "values('sKey" + i + "','xinhua" + k+i + "','新华医院','111223333','国有医院','201701051123" + i + "','张三" + i +
                           "','男','居民医保','1960012077775','床位费','0.0','西药费','0.0','中药费','0.0','氧气费','0.0','护理费','0.0','检查费','0.0','材料费','0.0','0.0" +
                           i + "','0.0" + i + "','0.0" + i + "','0.0" + i + "','0.0" + i + "','0.0" + i + "','0.0" + i + "','0.0" +
                           i + "','0.0" + i + "','0.0" + i +
@@ -186,7 +188,7 @@ namespace TestConsole
                     }
                     catch (Exception e)
                     {
-                        throw e;
+                        //throw e;
                     }
                 }
             }
@@ -194,6 +196,7 @@ namespace TestConsole
             mycon.Close();
             sw.Stop();
             Console.WriteLine(sw.Elapsed);
+            Console.ReadKey();
         }
     }
 }

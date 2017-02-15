@@ -58,8 +58,16 @@
             this.lbConn = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.tbHisID = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.lbTaskName = new System.Windows.Forms.Label();
+            this.btnTask = new System.Windows.Forms.Button();
+            this.label13 = new System.Windows.Forms.Label();
+            this.tbExePath = new System.Windows.Forms.TextBox();
+            this.btnExe = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -334,11 +342,81 @@
             this.tbHisID.Size = new System.Drawing.Size(151, 21);
             this.tbHisID.TabIndex = 9;
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btnExe);
+            this.groupBox3.Controls.Add(this.tbExePath);
+            this.groupBox3.Controls.Add(this.label13);
+            this.groupBox3.Controls.Add(this.btnTask);
+            this.groupBox3.Controls.Add(this.lbTaskName);
+            this.groupBox3.Controls.Add(this.label12);
+            this.groupBox3.Location = new System.Drawing.Point(12, 300);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(497, 74);
+            this.groupBox3.TabIndex = 18;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "计划任务";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(7, 21);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(77, 12);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "计划任务名：";
+            // 
+            // lbTaskName
+            // 
+            this.lbTaskName.AutoSize = true;
+            this.lbTaskName.Location = new System.Drawing.Point(81, 21);
+            this.lbTaskName.Name = "lbTaskName";
+            this.lbTaskName.Size = new System.Drawing.Size(65, 12);
+            this.lbTaskName.TabIndex = 1;
+            this.lbTaskName.Text = "BillBackUp";
+            // 
+            // btnTask
+            // 
+            this.btnTask.Location = new System.Drawing.Point(193, 48);
+            this.btnTask.Name = "btnTask";
+            this.btnTask.Size = new System.Drawing.Size(75, 23);
+            this.btnTask.TabIndex = 2;
+            this.btnTask.Text = "计划任务";
+            this.btnTask.UseVisualStyleBackColor = true;
+            this.btnTask.Click += new System.EventHandler(this.btnTask_Click);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(169, 21);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(89, 12);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "执行计划程序：";
+            // 
+            // tbExePath
+            // 
+            this.tbExePath.Location = new System.Drawing.Point(264, 17);
+            this.tbExePath.Name = "tbExePath";
+            this.tbExePath.Size = new System.Drawing.Size(191, 21);
+            this.tbExePath.TabIndex = 4;
+            // 
+            // btnExe
+            // 
+            this.btnExe.Location = new System.Drawing.Point(461, 17);
+            this.btnExe.Name = "btnExe";
+            this.btnExe.Size = new System.Drawing.Size(26, 23);
+            this.btnExe.TabIndex = 5;
+            this.btnExe.Text = "..";
+            this.btnExe.UseVisualStyleBackColor = true;
+            this.btnExe.Click += new System.EventHandler(this.btnExe_Click);
+            // 
             // FormInit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(521, 293);
+            this.ClientSize = new System.Drawing.Size(521, 386);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.tbHisID);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.lbConn);
@@ -361,6 +439,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -398,6 +478,13 @@
         private System.Windows.Forms.Label lbConn;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox tbHisID;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label lbTaskName;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button btnTask;
+        private System.Windows.Forms.Button btnExe;
+        private System.Windows.Forms.TextBox tbExePath;
+        private System.Windows.Forms.Label label13;
     }
 }
 

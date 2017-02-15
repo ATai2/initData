@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
+using BillBackUpcs.dal;
 using PrintForm.dal;
 
 namespace PrintForm
@@ -37,6 +39,11 @@ namespace PrintForm
         /// </summary>
         private void SearchBill()
         {
+            if (string.IsNullOrEmpty(tbNumber.Text.Trim()) && string.IsNullOrEmpty(tbName.Text.Trim()))
+            {
+                MessageBox.Show("订单编号和姓名至少一项！");
+                return;
+            }
             var sqlBuilder = new StringBuilder();
 
             var list = Helper.GetListFromRemoteControllTable();
@@ -124,9 +131,19 @@ namespace PrintForm
                                   ",SMONEY8_1 as '金额9'" +
                                   ",SPURPOSE18_1 as 'aaa'" +
                                   ",SMONEYRNAME_1 as '收款员'" +
-                                  ",SBIRTHDAY_1 as '日期'" + " from ").Append(list[i])
-                    .Append(" where GOODSNO_1=").Append(tbNumber.Text.Trim())
-                    .Append(" and SUSERNAME_1='").Append(tbName.Text.Trim()).Append("'");
+                                  ",tiffdest as '存储文件'" +
+                                  ",lIndex" +
+                                  ",SBIRTHDAY_1 as '日期'" + " from ").Append(list[i]).Append(" where ");
+
+                if (!string.IsNullOrEmpty(tbNumber.Text.Trim()))
+                {
+                    sqlBuilder.Append(" GOODSNO_1=").Append(tbNumber.Text.Trim()).Append(" and ");
+                }
+                if (!string.IsNullOrEmpty(tbName.Text.Trim()))
+                {
+                    sqlBuilder.Append(" SUSERNAME_1='").Append(tbName.Text.Trim()).Append("'");
+                }
+
                 if (i != list.Count - 1)
                     sqlBuilder.Append(" union all ");
             }
@@ -142,43 +159,49 @@ namespace PrintForm
                 dgvList.DefaultCellStyle.Font, b, e.RowBounds.Location.X + 20, e.RowBounds.Location.Y + 4);
         }
 
+
         private void btnPrePrint_Click(object sender, EventArgs e)
         {
-
-            var rows=dgvList.SelectedRows;
-                
-                  //打印预览
-//             ppdPicture = new PrintPreviewDialog();
-            var ppc = new PrintPreviewControl();
-            pd =printDocument;
+            ppdPicture = new PrintPreviewDialog();
+//            var ppc = new PrintPreviewControl();
+            pd = printDocument;
 
             var margins = new Margins(20, 20, 20, 20);
             pd.DefaultPageSettings.Margins = margins;
             pd.DefaultPageSettings.Landscape = true;
             pd.PrintPage += pd_PrintPage;
 
-            ppc.Document = pd;
-            //预览
-            Form formPreview=new Form();
-            formPreview.Controls.Add(ppc);
-            formPreview.Controls[0].Dock=DockStyle.Fill;
-            formPreview.ShowDialog();
-            formPreview.Dispose();
+//            ppc.Document = pd;
+//            //预览
+//            Form formPreview=new Form();
+//            formPreview.Controls.Add(ppc);
+//            formPreview.Controls[0].Dock=DockStyle.Fill;
+//            formPreview.ShowDialog();
+//            formPreview.Dispose();
 
-//            ppdPicture.Document = pd;
-//            ppdPicture.ShowDialog();
+            ppdPicture.Document = pd;
+            // ppdPicture.Use
+            DialogResult result = ppdPicture.ShowDialog();
 
-               
+//            if (result!=DialogResult.Cancel)
+//            {      打印机打印队列监控！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+            UpdateTable();
+//            }
 
             //数据表更新
 //            var update="update "
-           
-          
         }
 
         private void pd_PrintPage(object sender, PrintPageEventArgs e)
         {
-            var path = @"D:\天庸公司\数字凭证(制作)\上海市财政局_非税收入_上海交通大学医学院附属新华医院_dfgdfg.tiff";
+            var rows = dgvList.SelectedRows;
+            var index = rows[0].Index;
+            var ro = dgvList.Rows[index];
+            var tableName = ro.Cells[0].Value.ToString().Trim();
+            var dest = ro.Cells["存储文件"].Value.ToString().Trim();
+
+
+            var path = dest;
             var temp = Image.FromFile(path);
 
             int printWidth = pd.DefaultPageSettings.PaperSize.Width; //打印机纸张的宽度
@@ -193,7 +216,7 @@ namespace PrintForm
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            pd =printDocument;
+            pd = printDocument;
 
             var margins = new Margins(20, 20, 20, 20);
             pd.DefaultPageSettings.Margins = margins;
@@ -204,16 +227,31 @@ namespace PrintForm
             {
                 pd.Print();
             }
-            finally
+            catch (Exception)
             {
                 MessageBox.Show("打印失败");
             }
-            
         }
 
-        private void printDocument_EndPrint(object sender, PrintEventArgs e)
+//
+//        private void printDocument_EndPrint(object sender, PrintEventArgs e)
+//        {
+//            MessageBox.Show("打印成功");
+//            UpdateTable();
+//        }
+
+        private void UpdateTable()
         {
-            
+            var rows = dgvList.SelectedRows;
+            var index = rows[0].Index;
+            var ro = dgvList.Rows[index];
+            var tableName = ro.Cells[0].Value.ToString().Trim();
+            var dest = ro.Cells["存储文件"].Value.ToString().Trim();
+            var lindex = ro.Cells["lIndex"].Value.ToString().Trim();
+            var sql = "update " + tableName + " set isprint=1 where lIndex=" + lindex;
+
+            RemoteSqlHelper.ExecuteNonQuery(RemoteSqlHelper.GetConnection(), CommandType.Text, sql);
+            SearchBill();
         }
     }
 }

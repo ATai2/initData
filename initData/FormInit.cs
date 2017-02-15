@@ -1,16 +1,12 @@
 ﻿using initData.model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
+using Microsoft.Win32.TaskScheduler;
+
 
 namespace initData
 {
@@ -169,6 +165,69 @@ namespace initData
 
             lbConn.Text = "本地数据库连接" + (local ? "成功" : "失败") +
                 "；远程数据库连接" + (remote ? "成功" : "失败");
+
+        }
+
+        private void btnTask_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(tbExePath.Text.Trim()))
+            {
+                MessageBox.Show("请选择执行文件");
+                return;
+            }
+            var exePath = tbExePath.Text.Trim();
+            //            TaskService.Instance.AddTask("test", QuickTriggerType.Daily, "initData.exe");
+            using (TaskService ts = new TaskService())
+            {
+                DateTime dt = new DateTime(DateTime.Now.Year, DateTime.Now.Month
+                    , DateTime.Now.Day, 0, 0, 0);
+                var list = ts.AllTasks;
+                string taskName = lbTaskName.Text.Trim();
+                var taskNameList = new List<string>();
+                foreach (var task in list)
+                {
+                    taskNameList.Add(task.Name);
+                }
+
+                if (taskNameList.Contains(taskName))
+                {
+                    ts.RootFolder.DeleteTask(taskName);
+                }
+
+                var addTask = ts.AddTask(taskName, new TimeTrigger()
+                {
+                    StartBoundary = dt,
+                    EndBoundary = dt+TimeSpan.FromDays(1000),
+                    
+                    Enabled = true
+                }, new ExecAction(exePath));
+                var definition = addTask.Definition;
+                definition.RegistrationInfo.Description = "发票备份，每天00：00：00开始执行";
+                definition.Settings.DisallowStartIfOnBatteries = false;
+                definition.Settings.Enabled = true;
+                definition.Settings.AllowDemandStart = true;
+                definition.Settings.Priority = ProcessPriorityClass.High;
+                definition.Settings.StopIfGoingOnBatteries = false;
+               
+                TaskEditDialog edit = new TaskEditDialog();
+                edit.Editable = true;
+                edit.RegisterTaskOnAccept = true;
+                edit.Initialize(addTask);
+                edit.ShowDialog();
+                //                ts.RootFolder.DeleteTask("ksd");
+//                int i = 0;
+            }
+        }
+
+        private void btnExe_Click(object sender, EventArgs e)
+        {
+            var taskExe=new OpenFileDialog();
+
+            if (taskExe.ShowDialog()==DialogResult.OK)
+            {
+                tbExePath.Text = taskExe.FileName;
+            }
+
 
         }
     }
