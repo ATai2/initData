@@ -40,27 +40,13 @@ namespace initData
             cm.Local = local.ToString();
             cm.Remote = remote.ToString();
             cm.Hisid = tbHisID.Text.Trim();
+            cm.Pic=tbPic.Text.Trim();
             //save配置文件
             cm.save(tbConfig.Text.Trim());
         }
 
 
-        ///// <summary>
-        ///// 选择日志存放目录
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //private void button1_Click(object sender, EventArgs e)
-        //{
-        //    var logFile = new FolderBrowserDialog();
-        //    logFile.Description = "请选择日志文件存放目录";
-        //    if (logFile.ShowDialog() == DialogResult.OK)
-        //    {
-        //        tbLog.Text = logFile.SelectedPath;
-        //    }
-        //}
-
-
+   
         /// <summary>
         /// 选择tiff图片存放目录
         /// </summary>
@@ -88,28 +74,20 @@ namespace initData
         private void btnConfigPath_Click(object sender, EventArgs e)
         {
             var logFile = new OpenFileDialog();
+            logFile.Filter = "XML文件|initData.xml";
 
             if (logFile.ShowDialog() == DialogResult.OK)
             {
                 tbConfig.Text = logFile.FileName;
             }
+            else
+            {
+                return;
+            }
 
-            //配置文件设置
-
-            //var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            //if (!config.HasFile)
-            //{
-            //    throw new ArgumentException("程序配置文件缺失！");
-            //}
-            //string key = "path";
+         
           string value = logFile.FileName;
-            //KeyValueConfigurationElement _key = config.AppSettings.Settings[key];
-            //if (_key == null)
-            //    config.AppSettings.Settings.Add(key, value);
-            //else
-            //    config.AppSettings.Settings[key].Value = value;
-            //config.Save(ConfigurationSaveMode.Modified);
-
+       
 
             //读取配置文件
             cm.init(value);
@@ -142,11 +120,12 @@ namespace initData
             }
             catch (Exception)
             {
-
+              
             }
             finally
             {
-                localconn.Close();
+               
+                localconn?.Close();
             }
 
             try
@@ -156,11 +135,11 @@ namespace initData
             }
             catch (Exception)
             {
-
+               
             }
             finally
             {
-                remoteconn.Close();
+                remoteconn?.Close();
             }
 
             lbConn.Text = "本地数据库连接" + (local ? "成功" : "失败") +
@@ -193,11 +172,11 @@ namespace initData
                 {
                     ts.RootFolder.DeleteTask(taskName);
                 }
-
-                var addTask = ts.AddTask(taskName, new TimeTrigger()
+              
+                var addTask = ts.AddTask(taskName, new DailyTrigger()
                 {
                     StartBoundary = dt,
-                    EndBoundary = dt+TimeSpan.FromDays(1000),
+                    EndBoundary = dt+TimeSpan.FromDays(10000),
                     
                     Enabled = true
                 }, new ExecAction(exePath));
@@ -205,15 +184,17 @@ namespace initData
                 definition.RegistrationInfo.Description = "发票备份，每天00：00：00开始执行";
                 definition.Settings.DisallowStartIfOnBatteries = false;
                 definition.Settings.Enabled = true;
-                definition.Settings.AllowDemandStart = true;
+//                definition.Settings.AllowDemandStart = true;
                 definition.Settings.Priority = ProcessPriorityClass.High;
                 definition.Settings.StopIfGoingOnBatteries = false;
                
                 TaskEditDialog edit = new TaskEditDialog();
+//                edit.
                 edit.Editable = true;
                 edit.RegisterTaskOnAccept = true;
                 edit.Initialize(addTask);
                 edit.ShowDialog();
+
                 //                ts.RootFolder.DeleteTask("ksd");
 //                int i = 0;
             }

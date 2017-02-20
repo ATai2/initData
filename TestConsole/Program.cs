@@ -25,7 +25,6 @@ namespace TestConsole
 //            SqlHelper.ExecuteNonQuery(SqlHelper.GetConnection(), CommandType.Text, sql);
 //            var read=SqlHelper.ExecuteReader(SqlHelper.GetConnection(), CommandType.StoredProcedure,sel, new SqlParameter("@lIndex",76));
 //            Console.WriteLine(read[0]);
-
 //            GetDir();
 //            string src = "D:\\天庸公司\\数字凭证(制作)\\上海市财政局_非税收入_上海交通大学医学院附属新华医院_xinhua.tiff";
 //            string des = "C:\\天庸公司\\数字凭证(制作)\\上海市财政局_非税收入_上海交通大学医学院附属新华医院_xinhua.tiff";
@@ -37,7 +36,6 @@ namespace TestConsole
 //                int i = 0;
 //            }
 //            File.Move(src, des);
-
             //            Console.WriteLine(Path.PathSeparator+ DateTime.Now.ToString("yyyy-M-d"));
             //            string ip = "192.168.1.198";
             //            Ping ping = new Ping();
@@ -170,7 +168,7 @@ namespace TestConsole
                                        "ALTER TABLE [dbo].[ty_FillInfo" + k + "] ADD PRIMARY KEY ([lIndex])";
                 SqlCommand createCommand = new SqlCommand(creatTableSql, mycon);
                 createCommand.ExecuteNonQuery();
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     sql = "insert into ty_FillInfo" + k + " ("
                           +
@@ -186,9 +184,9 @@ namespace TestConsole
                     {
                         sqlCmd.ExecuteNonQuery();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        //throw e;
+                       
                     }
                 }
             }

@@ -1,11 +1,17 @@
-﻿namespace PrintForm
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Printing;
+using System.Windows.Forms;
+
+namespace PrintForm
 {
     partial class PrintForm
     {
         /// <summary>
         /// 必需的设计器变量。
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// 清理所有正在使用的资源。
@@ -28,21 +34,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PrintForm));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tbNumber = new System.Windows.Forms.TextBox();
             this.tbName = new System.Windows.Forms.TextBox();
             this.gbSearch = new System.Windows.Forms.GroupBox();
+            this.dtickerEnd = new System.Windows.Forms.DateTimePicker();
+            this.dtPickerBegin = new System.Windows.Forms.DateTimePicker();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.btnSearch = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.btnPrePrint = new System.Windows.Forms.Button();
-            this.printDocument = new System.Drawing.Printing.PrintDocument();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
-            this.btnPrint = new System.Windows.Forms.Button();
             this.dgvList = new System.Windows.Forms.DataGridView();
+            this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.gbSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -63,7 +68,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(416, 20);
+            this.label2.Location = new System.Drawing.Point(348, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 12);
             this.label2.TabIndex = 1;
@@ -73,22 +78,22 @@
             // 
             this.tbNumber.Location = new System.Drawing.Point(89, 17);
             this.tbNumber.Name = "tbNumber";
-            this.tbNumber.Size = new System.Drawing.Size(295, 21);
+            this.tbNumber.Size = new System.Drawing.Size(210, 21);
             this.tbNumber.TabIndex = 1;
             this.tbNumber.Text = "2017010511231";
             // 
             // tbName
             // 
-            this.tbName.Location = new System.Drawing.Point(457, 17);
+            this.tbName.Location = new System.Drawing.Point(389, 17);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(215, 21);
+            this.tbName.Size = new System.Drawing.Size(206, 21);
             this.tbName.TabIndex = 2;
             this.tbName.Text = "张三1";
             // 
             // gbSearch
             // 
-            this.gbSearch.Controls.Add(this.dateTimePicker2);
-            this.gbSearch.Controls.Add(this.dateTimePicker1);
+            this.gbSearch.Controls.Add(this.dtickerEnd);
+            this.gbSearch.Controls.Add(this.dtPickerBegin);
             this.gbSearch.Controls.Add(this.label4);
             this.gbSearch.Controls.Add(this.label3);
             this.gbSearch.Controls.Add(this.tbName);
@@ -97,10 +102,42 @@
             this.gbSearch.Controls.Add(this.label1);
             this.gbSearch.Location = new System.Drawing.Point(13, 16);
             this.gbSearch.Name = "gbSearch";
-            this.gbSearch.Size = new System.Drawing.Size(690, 114);
+            this.gbSearch.Size = new System.Drawing.Size(690, 91);
             this.gbSearch.TabIndex = 0;
             this.gbSearch.TabStop = false;
             this.gbSearch.Text = "查询条件";
+            // 
+            // dtickerEnd
+            // 
+            this.dtickerEnd.Location = new System.Drawing.Point(389, 51);
+            this.dtickerEnd.Name = "dtickerEnd";
+            this.dtickerEnd.Size = new System.Drawing.Size(206, 21);
+            this.dtickerEnd.TabIndex = 6;
+            // 
+            // dtPickerBegin
+            // 
+            this.dtPickerBegin.Location = new System.Drawing.Point(90, 54);
+            this.dtPickerBegin.Name = "dtPickerBegin";
+            this.dtPickerBegin.Size = new System.Drawing.Size(209, 21);
+            this.dtPickerBegin.TabIndex = 5;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(324, 56);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 12);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "结束日期;";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(24, 56);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 12);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "开始日期:";
             // 
             // btnSearch
             // 
@@ -121,8 +158,6 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.btnPrePrint);
-            this.splitContainer1.Panel1.Controls.Add(this.btnPrint);
             this.splitContainer1.Panel1.Controls.Add(this.gbSearch);
             this.splitContainer1.Panel1.Controls.Add(this.btnSearch);
             // 
@@ -130,61 +165,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dgvList);
             this.splitContainer1.Size = new System.Drawing.Size(884, 662);
-            this.splitContainer1.SplitterDistance = 133;
+            this.splitContainer1.SplitterDistance = 124;
             this.splitContainer1.TabIndex = 5;
-            // 
-            // btnPrePrint
-            // 
-            this.btnPrePrint.Location = new System.Drawing.Point(709, 59);
-            this.btnPrePrint.Name = "btnPrePrint";
-            this.btnPrePrint.Size = new System.Drawing.Size(75, 23);
-            this.btnPrePrint.TabIndex = 4;
-            this.btnPrePrint.Text = "打印预览";
-            this.btnPrePrint.UseVisualStyleBackColor = true;
-            this.btnPrePrint.Click += new System.EventHandler(this.btnPrePrint_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 56);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 12);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "开始日期:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 90);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 12);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "结束日期;";
-            // 
-            // dateTimePicker1
-            // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(90, 54);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(294, 21);
-            this.dateTimePicker1.TabIndex = 5;
-            // 
-            // dateTimePicker2
-            // 
-            this.dateTimePicker2.Location = new System.Drawing.Point(89, 90);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(295, 21);
-            this.dateTimePicker2.TabIndex = 6;
-            // 
-            // btnPrint
-            // 
-            this.btnPrint.Location = new System.Drawing.Point(709, 95);
-            this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(75, 23);
-            this.btnPrint.TabIndex = 5;
-            this.btnPrint.Text = "打印";
-            this.btnPrint.UseVisualStyleBackColor = true;
-            this.btnPrint.Visible = false;
-            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
             // dgvList
             // 
@@ -192,10 +174,13 @@
             this.dgvList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvList.Location = new System.Drawing.Point(0, 0);
             this.dgvList.Name = "dgvList";
+            this.dgvList.ReadOnly = true;
             this.dgvList.RowTemplate.Height = 23;
             this.dgvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvList.Size = new System.Drawing.Size(884, 525);
+            this.dgvList.Size = new System.Drawing.Size(884, 534);
             this.dgvList.TabIndex = 5;
+            this.dgvList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvList_CellDoubleClick);
+            this.dgvList.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvList_RowPostPaint);
             // 
             // PrintForm
             // 
@@ -203,6 +188,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 662);
             this.Controls.Add(this.splitContainer1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PrintForm";
             this.Text = "发票打印：";
             this.gbSearch.ResumeLayout(false);
@@ -218,21 +204,19 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox tbNumber;
-        private System.Windows.Forms.TextBox tbName;
-        private System.Windows.Forms.GroupBox gbSearch;
-        private System.Windows.Forms.Button btnSearch;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Button btnPrePrint;
-        private System.Drawing.Printing.PrintDocument printDocument;
-        private System.Windows.Forms.DateTimePicker dateTimePicker2;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button btnPrint;
-        private System.Windows.Forms.DataGridView dgvList;
+        private Label label1;
+        private Label label2;
+        private TextBox tbNumber;
+        private TextBox tbName;
+        private GroupBox gbSearch;
+        private Button btnSearch;
+        private SplitContainer splitContainer1;
+        private PrintDocument printDocument;
+        private DateTimePicker dtickerEnd;
+        private DateTimePicker dtPickerBegin;
+        private Label label4;
+        private Label label3;
+        private DataGridView dgvList;
     }
 }
 

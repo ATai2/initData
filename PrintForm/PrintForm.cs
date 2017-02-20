@@ -3,6 +3,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using BillBackUpcs.dal;
@@ -15,6 +16,8 @@ namespace PrintForm
         public readonly DbService Helper = new DbService();
         private PrintPreviewDialog ppdPicture;
         private PrintDocument pd;
+
+        public delegate void UpdateTableMy();
 
         public PrintForm()
         {
@@ -39,7 +42,7 @@ namespace PrintForm
         /// </summary>
         private void SearchBill()
         {
-            if (string.IsNullOrEmpty(tbNumber.Text.Trim()) && string.IsNullOrEmpty(tbName.Text.Trim()))
+            if (String.IsNullOrEmpty(tbNumber.Text.Trim()) && String.IsNullOrEmpty(tbName.Text.Trim()))
             {
                 MessageBox.Show("订单编号和姓名至少一项！");
                 return;
@@ -47,6 +50,8 @@ namespace PrintForm
             var sqlBuilder = new StringBuilder();
 
             var list = Helper.GetListFromRemoteControllTable();
+            list.Remove("ty_VoucherFile");
+            list.Remove("ty_FillTableList");
             for (var i = 0; i < list.Count; i++)
             {
                 sqlBuilder.Append("select '" + list[i] + "' as tableName" +
@@ -135,14 +140,24 @@ namespace PrintForm
                                   ",lIndex" +
                                   ",SBIRTHDAY_1 as '日期'" + " from ").Append(list[i]).Append(" where ");
 
-                if (!string.IsNullOrEmpty(tbNumber.Text.Trim()))
+                if (!String.IsNullOrEmpty(tbNumber.Text.Trim()))
                 {
                     sqlBuilder.Append(" GOODSNO_1=").Append(tbNumber.Text.Trim()).Append(" and ");
                 }
-                if (!string.IsNullOrEmpty(tbName.Text.Trim()))
+                if (!String.IsNullOrEmpty(tbName.Text.Trim()))
                 {
                     sqlBuilder.Append(" SUSERNAME_1='").Append(tbName.Text.Trim()).Append("'");
                 }
+                var begin = dtPickerBegin.Value.Date;
+                var bstr = begin.Date.ToString("yyyy-M-d") + " 0:00:00";
+                var end = dtickerEnd.Value.Date;
+                var estr = end.Date.ToString("yyyy-M-d ") + "23:59:59";
+
+                sqlBuilder.Append("and backupdate>='")
+                    .Append(bstr).Append("'")
+                    .Append(" and backupdate<='")
+                    .Append(estr).Append("'");
+
 
                 if (i != list.Count - 1)
                     sqlBuilder.Append(" union all ");
@@ -157,39 +172,81 @@ namespace PrintForm
             var b = new SolidBrush(dgvList.RowHeadersDefaultCellStyle.ForeColor);
             e.Graphics.DrawString((e.RowIndex + 1).ToString(CultureInfo.CurrentUICulture),
                 dgvList.DefaultCellStyle.Font, b, e.RowBounds.Location.X + 20, e.RowBounds.Location.Y + 4);
+            dgvList.RowHeadersWidth = 50;
         }
 
 
         private void btnPrePrint_Click(object sender, EventArgs e)
         {
-            ppdPicture = new PrintPreviewDialog();
-//            var ppc = new PrintPreviewControl();
+            PrePrint();
+        }
+
+        private void Print()
+        {
+            var ppc = new PrintPreviewControl();
             pd = printDocument;
 
             var margins = new Margins(20, 20, 20, 20);
             pd.DefaultPageSettings.Margins = margins;
             pd.DefaultPageSettings.Landscape = true;
             pd.PrintPage += pd_PrintPage;
-
-//            ppc.Document = pd;
-//            //预览
-//            Form formPreview=new Form();
+            ppc.Document = pd;
+            FormPrintResult formPreview = new FormPrintResult(ppc);
+            formPreview.PreUpdateTable = new Action(UpdateTable);
 //            formPreview.Controls.Add(ppc);
-//            formPreview.Controls[0].Dock=DockStyle.Fill;
-//            formPreview.ShowDialog();
-//            formPreview.Dispose();
+//            var s=formPreview.Controls["pnlPic"];
+//            s.Controls.Add(ppc);
+//            formPreview.Controls["pnlPic"].Dock = DockStyle.Fill;
+            formPreview.ShowDialog();
+            formPreview.Dispose();
 
-            ppdPicture.Document = pd;
-            // ppdPicture.Use
-            DialogResult result = ppdPicture.ShowDialog();
 
-//            if (result!=DialogResult.Cancel)
-//            {      打印机打印队列监控！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-            UpdateTable();
-//            }
+//            DialogResult result = ppdPicture.ShowDialog();
 
-            //数据表更新
-//            var update="update "
+//            PreUpdateTable();
+        }
+
+        private void PrePrint()
+        {
+            ShowPic();
+//            var ppc = new PrintPreviewControl();
+//            pd = printDocument;
+//            var margins = new Margins(20, 20, 20, 20);
+//            pd.DefaultPageSettings.Margins = margins;
+//            pd.DefaultPageSettings.Landscape = true;
+//            pd.PrintPage += pd_PrintPage;
+//            ppc.Document = pd;
+        }
+
+        private void ShowPic()
+        {
+            var rows = dgvList.SelectedRows;
+            if (rows.Count == 0)
+            {
+                return;
+            }
+            var index = rows[0].Index;
+            var ro = dgvList.Rows[index];
+            var tableName = ro.Cells[0].Value.ToString().Trim();
+            var dest = ro.Cells["存储文件"].Value.ToString().Trim();
+            if (String.IsNullOrEmpty(dest))
+            {
+                MessageBox.Show("无发票文件");
+                return;
+            }
+
+            var path = dest;
+            if (!File.Exists(path))
+            {
+                return;
+            }
+            var temp = Image.FromFile(path);
+            var form2 = new FormPrintResult(temp);
+
+            form2.PreUpdateTable = UpdateTable;
+
+            form2.ShowDialog();
+//            form2.Dispose();
         }
 
         private void pd_PrintPage(object sender, PrintPageEventArgs e)
@@ -226,6 +283,7 @@ namespace PrintForm
             try
             {
                 pd.Print();
+                UpdateTable();
             }
             catch (Exception)
             {
@@ -233,12 +291,6 @@ namespace PrintForm
             }
         }
 
-//
-//        private void printDocument_EndPrint(object sender, PrintEventArgs e)
-//        {
-//            MessageBox.Show("打印成功");
-//            UpdateTable();
-//        }
 
         private void UpdateTable()
         {
@@ -252,6 +304,11 @@ namespace PrintForm
 
             RemoteSqlHelper.ExecuteNonQuery(RemoteSqlHelper.GetConnection(), CommandType.Text, sql);
             SearchBill();
+        }
+
+        private void dgvList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            PrePrint();
         }
     }
 }

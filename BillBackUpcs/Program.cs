@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using BillBackUpcs.controllers;
 using BillBackUpcs.dal;
-using BillBackUpcs.test;
-using log4net;
 
 namespace BillBackUpcs
 {
