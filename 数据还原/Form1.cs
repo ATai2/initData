@@ -51,7 +51,7 @@ namespace 数据还原
 
         private void btnDb_Click(object sender, EventArgs e)
         {
-
+            rtBox.Text += "开始系统恢复：";
 
             SqlHelper.SetConnString(configModel.Remote);
             var remoteConn = SqlHelper.GetConnection();
@@ -59,20 +59,21 @@ namespace 数据还原
             SqlHelper.SetConnString(configModel.Local);
             var localConn = SqlHelper.GetConnection();
 
+            var ds=SqlHelper.ExecuteDataset(remoteConn, CommandType.Text, "select name from sysobjects where xtype='U'");
+            var table=ds.Tables[0];
 
+            var sb=new StringBuilder();
 
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                sb.Append("drop table ").Append(table.Rows[i][0]).Append(";");
+            }
 
-
-
-            var drop = "drop table ty_FillInfo1;" +
-                       "drop table ty_FillInfo2;" +
-                       "drop table ty_FillInfo3;" +
-                       "drop table ty_FillInfo4;"+
-                       "drop table ty_FillInfo5;";
-
+            var drop = sb.ToString();
+            
             SqlHelper.ExecuteNonQuery(remoteConn, CommandType.Text, drop);
 
-
+            rtBox.Text += "执行："+drop;
 
 
 
@@ -99,14 +100,17 @@ namespace 数据还原
                         if (File.Exists(destFileName))
                         {
                             File.Delete(destFileName);
+                            rtBox.Text += "删除图片" + destFileName;
                         }
 
                         if (File.Exists(copyFileName))
                         {
                             File.Delete(copyFileName);
+                            rtBox.Text += "删除图片" + copyFileName;
+
                         }
                         File.Copy(@"D:\天庸公司\上海市财政局_非税收入_上海交通大学医学院附属新华医院_xinhua4100.tiff", destFileName);
-
+                        rtBox.Text += "复制图片" + destFileName;
                     }
                     catch (Exception)
                     {
