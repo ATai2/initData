@@ -21,7 +21,7 @@ namespace BillUpConsole
             Console.WriteLine("任务结束。查看日志请移步日志记录……");
             sw.Stop();
             Console.WriteLine("共计用时： " + sw.ElapsedMilliseconds / 1000 + "s.");
-            Console.ReadKey();
+//            Console.ReadKey();
         }
     }
 }

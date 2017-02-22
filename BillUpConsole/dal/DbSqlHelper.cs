@@ -126,7 +126,11 @@ namespace BillUpConsole.dal
                 }
                 while (dr.Read())
                 {
-                    mTables.Add(dr["sTableName"].ToString());
+                    var name=dr["sTableName"].ToString();
+                    if (!mTables.Contains(name))
+                    {
+                         mTables.Add(name);
+                    }
                 }
                 dr.Close();
             }
@@ -150,7 +154,11 @@ namespace BillUpConsole.dal
                 var dr = RemoteSqlHelper.ExecuteReader(RemoteSqlHelper.GetConnection(), CommandType.Text, sql);
                 while (dr.Read())
                 {
-                    mRemoteTables.Add(dr["Name"].ToString());
+                    var name = dr["sTableName"].ToString();
+                    if (!mRemoteTables.Contains(name))
+                    {
+                        mRemoteTables.Add(dr["Name"].ToString());
+                    }
                 }
                 dr.Close();
             }
@@ -220,18 +228,14 @@ namespace BillUpConsole.dal
             {
                 try
                 {
-                    string sql = "EXEC sp_rename '" + tableName + "','" + tableName + DateTime.Today + "'";
-                    var cmd = new SqlCommand(sql, remoteConn);
-                    cmd.ExecuteNonQuery();
+                    var newName = tableName + "_" + DateTime.Now.ToString("yyyy_MM_d_hh_mm_ss_ffff");
+                    string sql = "EXEC sp_rename '" + tableName + "','" + newName + "'";
+//                    var cmd = new SqlCommand(sql, remoteConn);
+//                    cmd.ExecuteNonQuery();
                     var result = RemoteSqlHelper.ExecuteNonQuery(RemoteSqlHelper.GetConnection(), CommandType.Text, sql);
-                    if (result > -1)
-                    {
-                        slog.Info("表" + tableName + "重命名成功！");
-                    }
-                    else
-                    {
-                        slog.Error("表" + tableName + "重命名失败！");
-                    }
+                    var insertSql = "insert into ty_FillTableList (sTableName) values('" + newName + "')";
+                    RemoteSqlHelper.ExecuteNonQuery(RemoteSqlHelper.GetConnection(), CommandType.Text, insertSql);
+                    slog.Info("表" + tableName + "重命名成功！");
                 }
                 catch (Exception)
                 {
@@ -465,7 +469,8 @@ namespace BillUpConsole.dal
             string sql = "select * from " + tableName;
 
             var checkTable =
-                "SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'["+tableName+"]') AND OBJECTPROPERTY(ID, 'IsTable') = 1";
+                "SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[" + tableName +
+                "]') AND OBJECTPROPERTY(ID, 'IsTable') = 1";
             var sqlDataReader = SqlHelper.ExecuteReader(SqlHelper.GetConnection(), CommandType.Text,
                 checkTable);
             bool isTableExist = false;
@@ -708,7 +713,10 @@ namespace BillUpConsole.dal
             }
         }
 
-
+        /// <summary>
+        /// tablelist的表数据复制
+        /// </summary>
+        /// <param name="tableName"></param>
         private void CopyOriginTableData(string tableName)
         {
             slog.Info("进行表数据复制");
@@ -732,6 +740,9 @@ namespace BillUpConsole.dal
             #endregion
 
             string sql = "select * from " + tableName;
+            
+            List<string> key = new List<string>();
+            List<string> valueList = new List<string>();
 
             var ds = SqlHelper.ExecuteDataset(localConn, CommandType.Text, sql);
             if (ds.Tables.Count < 1)
@@ -745,14 +756,15 @@ namespace BillUpConsole.dal
 
             if (rows.Count > 0)
             {
+               
                 StringBuilder insertSql = null;
                 foreach (DataRow dataRow in rows)
-                {
-                    //远程库中是否有数据，有旧数据删除；无继续!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                { var checksql = new StringBuilder("select count(*) from ").Append(tableName);
                     insertSql = new StringBuilder("insert into " + tableName + "(");
                     for (int index = 0; index < tablestruct.Count; index++)
                     {
                         var tableStructure = tablestruct[index];
+                        key.Add(tableStructure.Name);
                         insertSql.Append(tableStructure.Name);
                         if (index != tablestruct.Count - 1)
                         {
@@ -768,24 +780,28 @@ namespace BillUpConsole.dal
                         {
                             case "System.Int32":
                                 insertSql.Append(dataRow[i]);
+                                valueList.Add(dataRow[i].ToString());
                                 break;
                             case "System.Int64":
                                 insertSql.Append(dataRow[i]);
+                                valueList.Add(dataRow[i].ToString());
                                 break;
                             case "System.String":
                                 var str = dataRow[i].ToString();
                                 if (String.IsNullOrEmpty(str))
                                 {
                                     insertSql.Append("NULL");
+                                    valueList.Add("NULL");
                                 }
                                 else
                                 {
                                     insertSql.Append("'").Append(str).Append("'");
+                                    valueList.Add("'" + str + "'");
                                 }
-
                                 break;
                             case "System.DBNull":
                                 insertSql.Append("NULL");
+                                valueList.Add("NULL");
                                 break;
                         }
                         if (i != tablestruct.Count - 1)
@@ -797,6 +813,11 @@ namespace BillUpConsole.dal
                             insertSql.Append(")");
                         }
                     }
+                    checksql.Append(" where ");
+                    checksql.Append(key[4]).Append("=").Append(valueList[4]);
+//                    checksql.Append(" and ");
+//                    checksql.Append(key[2]).Append("=").Append(valueList[2]);
+
                     try
                     {
                         var insertResult = -1;
@@ -804,18 +825,13 @@ namespace BillUpConsole.dal
                             insertSql.ToString());
                         if (insertResult != -1)
                         {
-                            slog.Debug("向表" + tableName + "中添加数据成功：" + insertSql.ToString());
-                            //更新表数据
+                            var result = RemoteSqlHelper.ExecuteScalar(RemoteSqlHelper.GetConnection(),
+                                             CommandType.Text,
+                                             checksql.ToString()) !=null;
 
-                            //新表数据添加成功，删除旧表数据
-                            var value = "";
-                            if (pktype.Equals("int") || pktype.Equals("bigint"))
+                            if (result)
                             {
-                                value = dataRow[pk].ToString();
-                            }
-                            else if (pktype.Equals("varchar"))
-                            {
-                                value = "'" + dataRow[pk] + "'";
+                                slog.Debug("向表" + tableName + "中添加数据成功：" + insertSql.ToString());
                             }
                         }
                         else
@@ -835,6 +851,9 @@ namespace BillUpConsole.dal
             }
         }
 
+        /// <summary>
+        /// 复制FillTableList
+        /// </summary>
         public void CopyTableList()
         {
             CheckLocalConn();
@@ -905,6 +924,10 @@ namespace BillUpConsole.dal
             }
         }
 
+        /// <summary>
+        /// 比较表结构的不同
+        /// </summary>
+        /// <param name="tableName"></param>
         private void CompareOriginTableData(string tableName)
         {
             var sql = "select * from " + tableName;
@@ -919,21 +942,72 @@ namespace BillUpConsole.dal
             {
                 nameList.Add(str["sTableName"].ToString());
             }
-
+            StringBuilder insertSql = null;
             foreach (DataRow local in locatTable.Rows)
             {
                 var name = local["sTableName"].ToString();
                 if (!nameList.Contains(name))
                 {
-                    DataRow dr = remoteTable.NewRow();
+                    insertSql = new StringBuilder("insert into " + tableName + "(");
+                    for (int index = 0; index < remoteTable.Columns.Count; index++)
+                    {
+                        insertSql.Append(remoteTable.Columns[index].ColumnName);
+                        if (index != remoteTable.Columns.Count - 1)
+                        {
+                            insertSql.Append(",");
+                        }
+                    }
+                    insertSql.Append(") values (");
                     for (int i = 0; i < remoteTable.Columns.Count; i++)
                     {
-                        dr[i] = local[i];
+                        var type = local[i].GetType().ToString();
+                        switch (type)
+                        {
+                            case "System.Int32":
+                                insertSql.Append(local[i]);
+                                break;
+                            case "System.Int64":
+                                insertSql.Append(local[i]);
+                                break;
+                            case "System.String":
+                                var str = local[i].ToString();
+                                if (String.IsNullOrEmpty(str))
+                                {
+                                    insertSql.Append("NULL");
+                                }
+                                else
+                                {
+                                    insertSql.Append("'").Append(str).Append("'");
+                                }
+
+                                break;
+                            case "System.DBNull":
+                                insertSql.Append("NULL");
+                                break;
+                        }
+                        if (i != remoteTable.Columns.Count - 1)
+                        {
+                            insertSql.Append(",");
+                        }
+                        else
+                        {
+                            insertSql.Append(")");
+                        }
+                    }
+
+                    var insertResult = -1;
+                    try
+                    {
+                        insertResult = RemoteSqlHelper.ExecuteNonQuery(remoteConn, CommandType.Text,
+                            insertSql.ToString());
+                        slog.Debug("向表" + tableName + "中添加数据成功：" + insertSql.ToString());
+                    }
+                    catch (Exception)
+                    {
+                        slog.Error("向表" + tableName + "中添加数据失败：" + insertSql.ToString());
                     }
                 }
             }
-            if(adapter.Update(remoteTable)>0)
-            slog.Info(tableName+"更新成功");
         }
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormInit));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tbLocalPwd = new System.Windows.Forms.TextBox();
             this.tbLocalUsername = new System.Windows.Forms.TextBox();
@@ -59,12 +60,12 @@
             this.label9 = new System.Windows.Forms.Label();
             this.tbHisID = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.lbTaskName = new System.Windows.Forms.Label();
-            this.btnTask = new System.Windows.Forms.Button();
-            this.label13 = new System.Windows.Forms.Label();
-            this.tbExePath = new System.Windows.Forms.TextBox();
             this.btnExe = new System.Windows.Forms.Button();
+            this.tbExePath = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.btnTask = new System.Windows.Forms.Button();
+            this.lbTaskName = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -357,23 +358,31 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "计划任务";
             // 
-            // label12
+            // btnExe
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(7, 21);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(77, 12);
-            this.label12.TabIndex = 0;
-            this.label12.Text = "计划任务名：";
+            this.btnExe.Location = new System.Drawing.Point(461, 17);
+            this.btnExe.Name = "btnExe";
+            this.btnExe.Size = new System.Drawing.Size(26, 23);
+            this.btnExe.TabIndex = 5;
+            this.btnExe.Text = "..";
+            this.btnExe.UseVisualStyleBackColor = true;
+            this.btnExe.Click += new System.EventHandler(this.btnExe_Click);
             // 
-            // lbTaskName
+            // tbExePath
             // 
-            this.lbTaskName.AutoSize = true;
-            this.lbTaskName.Location = new System.Drawing.Point(81, 21);
-            this.lbTaskName.Name = "lbTaskName";
-            this.lbTaskName.Size = new System.Drawing.Size(65, 12);
-            this.lbTaskName.TabIndex = 1;
-            this.lbTaskName.Text = "BillBackUp";
+            this.tbExePath.Location = new System.Drawing.Point(264, 17);
+            this.tbExePath.Name = "tbExePath";
+            this.tbExePath.Size = new System.Drawing.Size(191, 21);
+            this.tbExePath.TabIndex = 4;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(169, 21);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(89, 12);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "执行计划程序：";
             // 
             // btnTask
             // 
@@ -385,31 +394,23 @@
             this.btnTask.UseVisualStyleBackColor = true;
             this.btnTask.Click += new System.EventHandler(this.btnTask_Click);
             // 
-            // label13
+            // lbTaskName
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(169, 21);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(89, 12);
-            this.label13.TabIndex = 3;
-            this.label13.Text = "执行计划程序：";
+            this.lbTaskName.AutoSize = true;
+            this.lbTaskName.Location = new System.Drawing.Point(81, 21);
+            this.lbTaskName.Name = "lbTaskName";
+            this.lbTaskName.Size = new System.Drawing.Size(65, 12);
+            this.lbTaskName.TabIndex = 1;
+            this.lbTaskName.Text = "BillBackUp";
             // 
-            // tbExePath
+            // label12
             // 
-            this.tbExePath.Location = new System.Drawing.Point(264, 17);
-            this.tbExePath.Name = "tbExePath";
-            this.tbExePath.Size = new System.Drawing.Size(191, 21);
-            this.tbExePath.TabIndex = 4;
-            // 
-            // btnExe
-            // 
-            this.btnExe.Location = new System.Drawing.Point(461, 17);
-            this.btnExe.Name = "btnExe";
-            this.btnExe.Size = new System.Drawing.Size(26, 23);
-            this.btnExe.TabIndex = 5;
-            this.btnExe.Text = "..";
-            this.btnExe.UseVisualStyleBackColor = true;
-            this.btnExe.Click += new System.EventHandler(this.btnExe_Click);
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(7, 21);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(77, 12);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "计划任务名：";
             // 
             // FormInit
             // 
@@ -431,6 +432,7 @@
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormInit";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "参数初始化处理程序";

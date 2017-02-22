@@ -49,10 +49,10 @@ namespace PrintForm
 
             try
             {
-                PreUpdateTable();
+               
                 pd.Print();
                 MessageBox.Show("打印成功");
-
+                PreUpdateTable();
             }
             catch (InvalidPrinterException)
             {

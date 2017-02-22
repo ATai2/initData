@@ -16,8 +16,15 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            
-            initTableDates();
+            SqlHelper.SetConnString("server = 192.168.1.198; database = Enuo63305330; uid = sa; pwd =63305330");
+//            Console.WriteLine(DateTime.Now.ToString("yyyy-M-d-hh-mm-ss-ffff"));
+//            Console.ReadKey();
+//            initTableDates();
+
+            InsertTiff();
+
+            TiffFile();
+
 //            SqlHelper.SetConnString("server = 192.168.1.198; database = Enuo63305330; uid = sa; pwd =63305330");
 //            var sql =
 //                "create proc StuProc @lIndex int as begin select * from ty_FillInfo1 where lIndex=@lIndex end";
@@ -50,6 +57,31 @@ namespace TestConsole
             //            }
             //
             //            Console.ReadKey();
+        }
+
+        private static void TiffFile()
+        {
+            
+        }
+
+        private static void InsertTiff()
+        {
+            var sql = "";
+            for (int i = 1; i < 11; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                   sql+=
+               "insert into ty_VoucherFile(sVoucherKey,sVoucherName,sVoucherNo,sUniquekey," +
+               "sSymmetrickey,iSymmetrickeyLen,sFilePathName) values('8E8B0A56866C4C224AA2C1BDD1A48BE4B0911E0AEC47054DAE36A9F9521" +i+j+"',"+
+                    "'上海市财政局_非税收入',"+"'xinhua"+i+j+"',"+"'aaa',"+ "'2F9B41BE6CA453943A37FA3FCCE3420EFFDD6EDB37271735A0D30C10C65',"+"64,'"+
+                    @"D:\天庸公司\数字凭证(制作)\上海市财政局_非税收入_上海交通大学医学院附属新华医院_xinhua"+i+j+".tiff');"
+               ;
+                    
+                }
+            }
+
+            SqlHelper.ExecuteNonQuery(SqlHelper.GetConnection(), CommandType.Text, sql);
         }
 
         private static void GetDir()

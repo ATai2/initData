@@ -79,6 +79,7 @@ namespace initData
             if (logFile.ShowDialog() == DialogResult.OK)
             {
                 tbConfig.Text = logFile.FileName;
+
             }
             else
             {

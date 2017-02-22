@@ -190,6 +190,7 @@ namespace PrintForm
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PrintForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "发票打印：";
             this.gbSearch.ResumeLayout(false);
             this.gbSearch.PerformLayout();
