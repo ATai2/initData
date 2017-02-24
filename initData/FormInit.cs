@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
+using System.Timers;
 using System.Windows.Forms;
 using Microsoft.Win32.TaskScheduler;
+using Timer = System.Timers.Timer;
 
 
 namespace initData
@@ -185,10 +187,15 @@ namespace initData
                 definition.RegistrationInfo.Description = "发票备份，每天00：00：00开始执行";
                 definition.Settings.DisallowStartIfOnBatteries = false;
                 definition.Settings.Enabled = true;
+                definition.Settings.MultipleInstances=TaskInstancesPolicy.StopExisting;
+//                definition.Settings.RestartInterval=TimeSpan.FromSeconds(100);
+//                definition.Settings.Compatibility
+//                definition.Settings.ExecutionTimeLimit = TimeSpan.FromMinutes(2);
+//                definition.Settings.IdleSettings.IdleDuration = TimeSpan.FromMinutes(3);
 //                definition.Settings.AllowDemandStart = true;
                 definition.Settings.Priority = ProcessPriorityClass.High;
                 definition.Settings.StopIfGoingOnBatteries = false;
-               
+               //definition.Settings.
                 TaskEditDialog edit = new TaskEditDialog();
 //                edit.
                 edit.Editable = true;
@@ -211,6 +218,38 @@ namespace initData
             }
 
 
+        }
+
+        private void btnDo_Click(object sender, EventArgs e)
+        {
+            if(string.IsNullOrEmpty(tbTime.Text)) return;
+
+            var interval = Convert.ToInt32(tbTime.Text);
+               
+                        Timer timer=new Timer(interval*1000);
+                        timer.Elapsed+=new ElapsedEventHandler(DoWork);
+            timer.AutoReset = true;   //设置是执行一次（false）还是一直执行(true)；   
+            timer.Enabled = true;     //是否执行System.Timers.Timer.Elapsed事件； 
+        }
+
+        private void DoWork(object sender, ElapsedEventArgs e)
+        {
+            string path =tbExePath.Text ;//这个path就是你要调用的exe程序的绝对路径
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+
+
+            process.StartInfo.FileName = path;
+            process.StartInfo.WorkingDirectory = path;
+            process.StartInfo.CreateNoWindow = false;
+            process.Start();
+            if (process.HasExited)
+            {
+                MessageBox.Show("程序完成退出");
+            }
         }
     }
 }

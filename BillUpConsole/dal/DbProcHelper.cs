@@ -228,16 +228,6 @@ namespace BillUpConsole.dal
                 }
                 CreatTableByName(tableName);
             }
-
-
-//            bool flag = false;
-//            foreach (var tableStructure in localTable)
-//            {
-//                for (int i = 0; i < remoteTable.Count; i++)
-//                {
-//                    tableStructure.Equals(remoteTable[i]);
-//                }
-//            }
         }
 
         /// <summary>

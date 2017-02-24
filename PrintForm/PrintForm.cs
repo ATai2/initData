@@ -50,8 +50,15 @@ namespace PrintForm
             var sqlBuilder = new StringBuilder();
 
             var list = Helper.GetListFromRemoteControllTable();
+
+            if (list == null || list.Count == 0)
+            {
+                return;
+            }
+
             list.Remove("ty_VoucherFile");
             list.Remove("ty_FillTableList");
+
             for (var i = 0; i < list.Count; i++)
             {
                 sqlBuilder.Append("select '" + list[i] + "' as tableName" +

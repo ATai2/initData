@@ -66,6 +66,10 @@
             this.btnTask = new System.Windows.Forms.Button();
             this.lbTaskName = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.btnDo = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.tbTime = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -345,6 +349,10 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label15);
+            this.groupBox3.Controls.Add(this.tbTime);
+            this.groupBox3.Controls.Add(this.label14);
+            this.groupBox3.Controls.Add(this.btnDo);
             this.groupBox3.Controls.Add(this.btnExe);
             this.groupBox3.Controls.Add(this.tbExePath);
             this.groupBox3.Controls.Add(this.label13);
@@ -353,7 +361,7 @@
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Location = new System.Drawing.Point(12, 300);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(497, 74);
+            this.groupBox3.Size = new System.Drawing.Size(497, 102);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "计划任务";
@@ -386,7 +394,7 @@
             // 
             // btnTask
             // 
-            this.btnTask.Location = new System.Drawing.Point(193, 48);
+            this.btnTask.Location = new System.Drawing.Point(19, 51);
             this.btnTask.Name = "btnTask";
             this.btnTask.Size = new System.Drawing.Size(75, 23);
             this.btnTask.TabIndex = 2;
@@ -412,11 +420,46 @@
             this.label12.TabIndex = 0;
             this.label12.Text = "计划任务名：";
             // 
+            // btnDo
+            // 
+            this.btnDo.Location = new System.Drawing.Point(362, 51);
+            this.btnDo.Name = "btnDo";
+            this.btnDo.Size = new System.Drawing.Size(75, 23);
+            this.btnDo.TabIndex = 6;
+            this.btnDo.Text = "执行";
+            this.btnDo.UseVisualStyleBackColor = true;
+            this.btnDo.Click += new System.EventHandler(this.btnDo_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(169, 56);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(89, 12);
+            this.label14.TabIndex = 7;
+            this.label14.Text = "演示间隔时间：";
+            // 
+            // tbTime
+            // 
+            this.tbTime.Location = new System.Drawing.Point(258, 51);
+            this.tbTime.Name = "tbTime";
+            this.tbTime.Size = new System.Drawing.Size(75, 21);
+            this.tbTime.TabIndex = 8;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(339, 56);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(17, 12);
+            this.label15.TabIndex = 9;
+            this.label15.Text = "秒";
+            // 
             // FormInit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(521, 386);
+            this.ClientSize = new System.Drawing.Size(521, 414);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.tbHisID);
             this.Controls.Add(this.label9);
@@ -487,6 +530,10 @@
         private System.Windows.Forms.Button btnExe;
         private System.Windows.Forms.TextBox tbExePath;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox tbTime;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button btnDo;
     }
 }
 

@@ -164,7 +164,7 @@ namespace BillUpConsole.dal
             }
             catch (Exception)
             {
-                slog.Error("无法从远程数据库中获得信息！");
+//                slog.Error("无法从远程数据库中获得信息！");
             }
         }
 
@@ -305,7 +305,7 @@ namespace BillUpConsole.dal
             }
             catch (Exception)
             {
-                slog.Error("创建表" + tableName + "失败！");
+               // slog.Error("创建表" + tableName + "失败！");
             }
         }
 
@@ -432,7 +432,7 @@ namespace BillUpConsole.dal
                     }
                 }
                 File.Move(src, des);
-                slog.Info("文件：" + src + "移动成功");
+                slog.Debug("文件：" + src + "移动成功");
                 return true;
             }
             catch (Exception exception)
@@ -516,6 +516,10 @@ namespace BillUpConsole.dal
                         if (result.Read())
                         {
                             tiffPath = result["sFilePathName"].ToString();
+                        }
+                        else
+                        {
+                            slog.Error("sVoucherNo='" + sVoucherNo + "查无数据");
                         }
                         result.Close();
                     }
@@ -914,7 +918,7 @@ namespace BillUpConsole.dal
                 }
                 catch (Exception)
                 {
-                    slog.Error("创建表" + tableName + "失败！");
+                  //  slog.Error("创建表" + tableName + "失败！");
                 }
             }
             else
